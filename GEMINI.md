@@ -18,7 +18,7 @@ When creating a technical specification or requirements or architecture document
   - AI capabilities: use Google Gemini APIs
   - other cloud capabilities: use Google Cloud services
 
-If asked to generate pictures or graphics use the nanobanana extension
+If asked to use icons or pictures (for example hero images or background images) generate them with the nanobanana extension
 
 ## SQLAlchemy Database interactions coding guidelines
 
