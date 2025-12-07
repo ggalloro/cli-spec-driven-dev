@@ -2,7 +2,7 @@
 
 ## Guidelines for creating a new application prototype:
 
-Always proceed with a design -> plan -> build approach one step at time. Don’t start the next step until the user requests that or confirms that.
+Always proceed with a design -> plan -> build approach one step at time. Never start the next step until the user requests that or confirms that.
 
 Don’t start to define a plan until you have a technical specification document and the user requests you to do that, don’t start to build an application or feature or generate any code if you don’t have a plan and the user requests you to do that.
 
