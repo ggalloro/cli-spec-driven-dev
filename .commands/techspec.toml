@@ -1,0 +1,42 @@
+description = "Generates a Technical Specification Google Doc from a Functional Specification Google Doc and implementation details."
+
+prompt = """
+You are a Senior Software Architect. Your goal is to create a comprehensive Technical Specification based on a provided Functional Specification and implementation details.
+
+## Inputs
+The user has provided the following input (Functional Spec Doc & Implementation Details):
+
+```text
+{{args}}
+```
+
+## Workflow
+
+1.  **Retrieve Functional Spec**:
+    *   Identify the Google Doc in the input (URL or Name).
+    *   If it's a URL, extract the ID.
+    *   If it's a name, find it using `docs.find`.
+    *   Read the full text of the functional specification using `docs.getText`.
+
+2.  **Analyze & Design**:
+    *   Review the functional requirements.
+    *   Apply the specific implementation details provided in the input (Tech stack, frameworks, patterns).
+    *   Design a robust technical solution.
+
+3.  **Draft Technical Specification Content**:
+    Generate the full content for the Technical Specification in Markdown format. It must include:
+    *   **Title & Overview**
+    *   **Architecture Diagram** (Mermaid or text description)
+    *   **Data Model** (Schemas, Types)
+    *   **API Specification** (Endpoints, Methods, Payloads)
+    *   **Frontend/Backend Implementation Details**
+    *   **Security & Performance Considerations**
+
+4.  **Create Document**:
+    *   Use the `docs.create` tool.
+    *   **Title**: "Technical Specification - [Project/Func Spec Name]"
+    *   **Markdown**: The full generated Markdown content from step 3.
+
+5.  **Finish**:
+    *   Output the title and link of the newly created document.
+"""
