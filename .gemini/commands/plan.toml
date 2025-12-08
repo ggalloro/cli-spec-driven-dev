@@ -22,7 +22,6 @@ The user has provided the Technical Specification Google Doc (URL or Name) in th
     *   Analyze the architecture, data models, APIs, and frontend/backend requirements defined in the Tech Spec.
     *   Break down the implementation into **atomic, sequential tasks**.
     *   Each task should be small enough to be completed in a single coding session.
-    *   Group tasks into logical **Phases** (e.g., Setup, Database, Backend API, Frontend, Integration, Testing).
     *   **Git Strategy**:
         *   **Start**: The very first tasks must handle Git initialization. Check for an existing repo. If present, create a new feature branch named after the application (kebab-case, e.g., "My App" -> "my-app").
         *   **End**: The very last tasks must handle saving changes. Add all files, commit, and push the feature branch to the remote repository.
@@ -42,13 +41,11 @@ The user has provided the Technical Specification Google Doc (URL or Name) in th
     - [ ] [Task ID] Description of the atomic task (e.g., "Setup React project with Vite")
     - [ ] [Task ID] Another task...
 
-    ## Phase 2: [Phase Name]
-    ...
-    
     ... [Other Phases] ...
 
     ## Phase [N]: Completion & Version Control
     - [ ] Verify application functionality.
+    - [ ] Create a `README.md` file explaining the application functions, how to interact with them, the architecture, file breakdown and how to run and test it locally.
     - [ ] Add all changes to the repository (`git add .`).
     - [ ] Commit the changes (`git commit -m "Complete implementation of [Project Name]"`).
     - [ ] Push the feature branch to the remote repository, creating a branch with the same name in the remote repository, using the Gemini CLI github MCP server.
