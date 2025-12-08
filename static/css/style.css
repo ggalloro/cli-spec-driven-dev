@@ -1,0 +1,88 @@
+:root {
+    --christmas-red: #8B0000;
+    --christmas-green: #228B22;
+    --snow-white: #F8F9FA;
+    --gold: #FFD700;
+}
+
+body {
+    background-color: var(--snow-white);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.bg-christmas-red {
+    background-color: var(--christmas-red) !important;
+}
+
+.bg-christmas-green {
+    background-color: var(--christmas-green) !important;
+}
+
+.text-christmas-red {
+    color: var(--christmas-red) !important;
+}
+
+.text-christmas-green {
+    color: var(--christmas-green) !important;
+}
+
+.btn-christmas-red {
+    background-color: var(--christmas-red);
+    border-color: var(--christmas-red);
+}
+
+.btn-christmas-red:hover {
+    background-color: #660000;
+    border-color: #660000;
+    color: white;
+}
+
+.font-christmas {
+    font-family: 'Mountains of Christmas', cursive;
+    font-weight: 700;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.snowflake-rating {
+    color: var(--gold);
+}
+
+.hero-section {
+    background-color: #e9ecef;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+}
+
+/* Fallback if image not loaded, though we'll try to use one */
+.hero-overlay {
+    background-color: rgba(0, 0, 0, 0.4); 
+    position: absolute;
+    top: 0; 
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0.5rem;
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}

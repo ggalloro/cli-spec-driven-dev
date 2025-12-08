@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ gift.title }} - North Pole Wishlist{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}" class="text-christmas-green">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('index', category=gift.category) }}" class="text-christmas-green">{{ gift.category }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ gift.title }}</li>
+            </ol>
+        </nav>
+        
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h1 class="display-5 font-christmas mb-0">{{ gift.title }}</h1>
+                    <span class="badge bg-christmas-green fs-6">{{ gift.category }}</span>
+                </div>
+                
+                <p class="lead">{{ gift.description }}</p>
+                
+                <hr>
+                
+                <div class="d-flex align-items-center">
+                    <div class="me-4 text-center">
+                        <div class="display-4 text-warning"><i class="fa-solid fa-snowflake"></i> {{ stats.avg_score }}</div>
+                        <small class="text-muted">Average Score</small>
+                    </div>
+                    <div class="text-center">
+                        <div class="display-4 text-secondary">{{ stats.vote_count }}</div>
+                        <small class="text-muted">Total Votes</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-light">
+                <h3 class="h5 mb-0"><i class="fa-regular fa-comments"></i> Elf Discussion</h3>
+            </div>
+            <div class="card-body">
+                {% if comments %}
+                    {% for comment in comments %}
+                        <div class="mb-3 border-bottom pb-3">
+                            <div class="d-flex justify-content-between">
+                                <strong>{{ comment.author_name }}</strong>
+                                <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </div>
+                            <p class="mb-0 mt-1">{{ comment.content }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center py-3">No comments yet. Be the first to say something!</p>
+                {% endif %}
+                
+                <h4 class="h6 mt-4 mb-3">Leave a Comment</h4>
+                <form method="POST" action="{{ url_for('comment_gift', gift_id=gift.id) }}">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="author_name" placeholder="Your Name (Optional - defaults to 'Secret Santa')">
+                    </div>
+                    <div class="mb-3">
+                        <textarea class="form-control" name="content" rows="3" minlength="10" maxlength="500" required placeholder="Share your thoughts... (10-500 chars)"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-christmas-green">Post Comment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card shadow-sm sticky-top" style="top: 2rem;">
+            <div class="card-header bg-christmas-green text-white">
+                <h3 class="h5 mb-0 font-christmas"><i class="fa-solid fa-check-to-slot"></i> Cast Your Vote</h3>
+            </div>
+            <div class="card-body text-center">
+                <p class="mb-3">Is this gift Naughty or Nice?</p>
+                <form method="POST" action="{{ url_for('vote_gift', gift_id=gift.id) }}">
+                    <div class="btn-group w-100 mb-3" role="group" aria-label="Rating">
+                        <input type="radio" class="btn-check" name="score" id="score1" value="1" autocomplete="off" required>
+                        <label class="btn btn-outline-warning" for="score1" title="Coal">1 <i class="fa-regular fa-snowflake"></i></label>
+
+                        <input type="radio" class="btn-check" name="score" id="score2" value="2" autocomplete="off">
+                        <label class="btn btn-outline-warning" for="score2">2 <i class="fa-regular fa-snowflake"></i></label>
+
+                        <input type="radio" class="btn-check" name="score" id="score3" value="3" autocomplete="off">
+                        <label class="btn btn-outline-warning" for="score3">3 <i class="fa-regular fa-snowflake"></i></label>
+
+                        <input type="radio" class="btn-check" name="score" id="score4" value="4" autocomplete="off">
+                        <label class="btn btn-outline-warning" for="score4">4 <i class="fa-regular fa-snowflake"></i></label>
+
+                        <input type="radio" class="btn-check" name="score" id="score5" value="5" autocomplete="off">
+                        <label class="btn btn-outline-warning" for="score5" title="Perfect!">5 <i class="fa-solid fa-snowflake"></i></label>
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100 text-dark fw-bold">Submit Rating</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero-section text-center" style="background-image: url('{{ url_for('static', filename='img/santa_hero.png') }}'); min-height: 300px; display: flex; align-items: center; justify-content: center;">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1 class="display-3 font-christmas">The North Pole Wishlist</h1>
+        <p class="lead">Discover, share, and rate the best holiday gifts from around the world!</p>
+        <a href="{{ url_for('submit_gift') }}" class="btn btn-lg btn-christmas-red mt-3"><i class="fa-solid fa-gift"></i> Submit a Gift Idea</a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="btn-group" role="group" aria-label="Filters">
+            <a href="{{ url_for('index', category=None, sort=current_sort) }}" class="btn btn-outline-success {% if not current_category %}active{% endif %}">All</a>
+            <a href="{{ url_for('index', category='For Kids', sort=current_sort) }}" class="btn btn-outline-success {% if current_category == 'For Kids' %}active{% endif %}">Kids</a>
+            <a href="{{ url_for('index', category='For Parents', sort=current_sort) }}" class="btn btn-outline-success {% if current_category == 'For Parents' %}active{% endif %}">Parents</a>
+            <a href="{{ url_for('index', category='Stocking Stuffers', sort=current_sort) }}" class="btn btn-outline-success {% if current_category == 'Stocking Stuffers' %}active{% endif %}">Stocking Stuffers</a>
+            <a href="{{ url_for('index', category='Tech & Gadgets', sort=current_sort) }}" class="btn btn-outline-success {% if current_category == 'Tech & Gadgets' %}active{% endif %}">Tech</a>
+        </div>
+    </div>
+    <div class="col-md-4 text-end">
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Sort by: {{ current_sort|title }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                <li><a class="dropdown-item" href="{{ url_for('index', category=current_category, sort='newest') }}">Newest Arrivals</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('index', category=current_category, sort='popular') }}">Most Popular</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('index', category=current_category, sort='ranking') }}">Top Rated</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for gift in gifts %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="card-title mb-0"><a href="{{ url_for('gift_detail', gift_id=gift.id) }}" class="text-decoration-none text-dark">{{ gift.title }}</a></h5>
+                    <span class="badge bg-christmas-green">{{ gift.category }}</span>
+                </div>
+                <p class="card-text text-muted small">{{ gift.description|truncate(100) }}</p>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="snowflake-rating">
+                        <i class="fa-solid fa-snowflake"></i> <strong>{{ stats[gift.id]['avg_score'] }}</strong> <span class="text-muted small">({{ stats[gift.id]['vote_count'] }} votes)</span>
+                    </div>
+                    <a href="{{ url_for('gift_detail', gift_id=gift.id) }}" class="btn btn-sm btn-outline-danger">View Details</a>
+                </div>
+            </div>
+            <div class="card-footer text-muted small">
+                Submitted on {{ gift.created_at.strftime('%Y-%m-%d') }}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-center py-5">
+        <h3 class="text-muted font-christmas">No gifts found under this chimney yet!</h3>
+        <p>Be the first to add one.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

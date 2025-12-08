@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Submit Gift Idea - North Pole Wishlist{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-header bg-christmas-red text-white">
+                <h2 class="h4 mb-0 font-christmas"><i class="fa-solid fa-gift"></i> Submit a New Gift Idea</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('submit_gift') }}">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Gift Name</label>
+                        <input type="text" class="form-control" id="title" name="title" maxlength="100" required placeholder="e.g. Retro Popcorn Maker">
+                        <div class="form-text">Keep it short and sweet (max 100 chars).</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="" selected disabled>Select a category...</option>
+                            <option value="For Kids">For Kids</option>
+                            <option value="For Parents">For Parents</option>
+                            <option value="Stocking Stuffers">Stocking Stuffers</option>
+                            <option value="DIY / Homemade">DIY / Homemade</option>
+                            <option value="Tech & Gadgets">Tech & Gadgets</option>
+                            <option value="Decorations">Decorations</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="4" maxlength="500" required placeholder="Why is this a great gift? Where can elves find it?"></textarea>
+                        <div class="form-text">Max 500 characters.</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-christmas-green btn-lg">Add to Wishlist</button>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
