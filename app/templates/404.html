@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3 text-center">
+        <h1 class="display-1 text-danger">404</h1>
+        <h2 class="mb-4">Oops! Page Not Found</h2>
+        <p class="lead">We can't seem to find the page you're looking for.</p>
+        <p>Perhaps you can return to the <a href="{{ url_for('main.home') }}">homepage</a>?</p>
+    </div>
+</div>
+{% endblock %}

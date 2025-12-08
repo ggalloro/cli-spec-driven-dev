@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Internal Server Error{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3 text-center">
+        <h1 class="display-1 text-danger">500</h1>
+        <h2 class="mb-4">Internal Server Error</h2>
+        <p class="lead">Something went wrong on our end. We're working to fix it!</p>
+        <p>Please try again later or return to the <a href="{{ url_for('main.home') }}">homepage</a>.</p>
+    </div>
+</div>
+{% endblock %}

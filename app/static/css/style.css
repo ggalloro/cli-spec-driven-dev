@@ -1,0 +1,35 @@
+:root {
+    --bs-primary: #D42426; /* Santa Red */
+    --bs-success: #165B33; /* Forest Green */
+    --bs-warning: #F8B229; /* Gold */
+    --bs-body-bg: #F0F4F8; /* Snow White/Blue tint */
+    --bs-body-color: #333;
+}
+
+body {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    font-family: 'Open Sans', sans-serif; /* A more readable font for body */
+}
+
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+    font-family: 'Mountains of Christmas', cursive; /* Festive font for headings */
+    color: var(--bs-primary);
+}
+
+.bg-primary {
+    background-color: var(--bs-primary) !important;
+}
+
+.text-primary {
+    color: var(--bs-primary) !important;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-primary);
+    --bs-btn-hover-bg: #b01a1d; /* Darker red for hover */
+    --bs-btn-hover-border-color: #b01a1d;
+    --bs-btn-active-bg: #8c1416;
+    --bs-btn-active-border-color: #8c1416;
+}

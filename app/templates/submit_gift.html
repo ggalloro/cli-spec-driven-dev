@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Submit New Gift Idea{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Submit a New Gift Idea</h2>
+<form method="POST" action="{{ url_for('main.submit_gift') }}">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.title.label(class="form-label") }}
+        {{ form.title(class="form-control", placeholder="e.g., Retro Popcorn Maker") }}
+        {% for error in form.title.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        {{ form.description.label(class="form-label") }}
+        {{ form.description(class="form-control", rows="5", placeholder="Detailed explanation or where it can be found...") }}
+        {% for error in form.description.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        {{ form.category.label(class="form-label") }}
+        {{ form.category(class="form-select") }}
+        {% for error in form.category.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+{% endblock %}

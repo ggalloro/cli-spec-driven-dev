@@ -1,0 +1,10 @@
+{% macro render_snowflakes(score) %}
+    {% set full_snowflakes = score | round(0, 'floor') | int %}
+    {% set empty_snowflakes = 5 - full_snowflakes %}
+    {% for _ in range(full_snowflakes) %}
+        <i class="fas fa-snowflake text-primary"></i>
+    {% endfor %}
+    {% for _ in range(empty_snowflakes) %}
+        <i class="far fa-snowflake text-muted"></i>
+    {% endfor %}
+{% endmacro %}
