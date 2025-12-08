@@ -10,13 +10,6 @@ When asked to read specifications, requirements or design documents, after you h
 
 ## Technical specification documents
 
-When creating a technical specification or requirements or architecture document:
-- If not specified or requested differently, use the following stack:
-  - Framework: Next.js (App Router)
-  - UI: Tailwind CSS
-  - API: Next.js API Routes
-  - AI capabilities: use Google Gemini APIs
-  - other cloud capabilities: use Google Cloud services
 
 If asked to use icons or pictures (for example hero images or background images) generate them with the tools available in the installed Gemini CLI Nano Banana extension 
 
@@ -79,8 +72,6 @@ users = db.session.scalars(stmt).all()
 
 
 
-For guide on interacting with Google Gemini API follow the instructions in:
-@gemini-styleguide.md
 
 
 
