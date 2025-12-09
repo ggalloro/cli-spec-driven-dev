@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}{{ gift.title }} - North Pole Wishlist{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <!-- Gift Details Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge bg-success fs-6">{{ gift.category }}</span>
+                    <span class="text-muted small">Submitted on {{ gift.created_at.strftime('%B %d, %Y') }}</span>
+                </div>
+                <h1 class="card-title display-5 mb-3">{{ gift.title }}</h1>
+                <p class="card-text lead">{{ gift.description }}</p>
+                
+                <hr>
+                
+                <div class="d-flex align-items-center">
+                    <div class="me-3">
+                        <span class="display-6 fw-bold text-primary">
+                            {% if avg_score %}
+                                {{ "%.1f"|format(avg_score) }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </span>
+                        <span class="text-muted">/ 5</span>
+                    </div>
+                    <div class="text-warning fs-4">
+                        {% for i in range(1, 6) %}
+                            {% if avg_score and avg_score >= i %}
+                                <i class="bi bi-snow2 text-primary"></i>
+                            {% elif avg_score and avg_score >= i - 0.5 %}
+                                <i class="bi bi-snow2 text-primary" style="opacity: 0.5;"></i>
+                            {% else %}
+                                <i class="bi bi-snow2 text-muted" style="opacity: 0.3;"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="ms-3 text-muted">
+                        {{ vote_count }} votes
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Voting Section -->
+            <div class="card-footer bg-light border-top-0">
+                <h5 class="card-title mt-2">Rate this Gift</h5>
+                <form action="{{ url_for('vote_gift', id=gift.id) }}" method="POST" class="d-flex align-items-center">
+                    {{ vote_form.hidden_tag() }}
+                    <div class="btn-group" role="group" aria-label="Rating">
+                        {% for subfield in vote_form.score %}
+                        <input type="radio" class="btn-check" name="{{ subfield.name }}" id="{{ subfield.id }}" value="{{ subfield.data }}" autocomplete="off" required>
+                        <label class="btn btn-outline-primary" for="{{ subfield.id }}">
+                            {{ subfield.label.text }} <i class="bi bi-snow2"></i>
+                        </label>
+                        {% endfor %}
+                    </div>
+                    <button type="submit" class="btn btn-primary ms-3">Vote</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h3 class="card-title mb-0"><i class="bi bi-chat-dots me-2"></i>Comments</h3>
+            </div>
+            <div class="card-body">
+                <!-- Comment Form -->
+                <form action="{{ url_for('comment_gift', id=gift.id) }}" method="POST" class="mb-5">
+                    {{ comment_form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ comment_form.author_name.label(class="form-label") }}
+                        {{ comment_form.author_name(class="form-control", placeholder="Your Name (optional)") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ comment_form.content.label(class="form-label") }}
+                        {{ comment_form.content(class="form-control", rows=3, placeholder="Share your thoughts...") }}
+                        {% if comment_form.content.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in comment_form.content.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-success">Post Comment</button>
+                </form>
+
+                <!-- Comments List -->
+                <div class="list-group list-group-flush">
+                    {% for comment in comments %}
+                    <div class="list-group-item px-0">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1 text-primary">{{ comment.author_name }}</h5>
+                            <small class="text-muted">{{ comment.created_at.strftime('%b %d, %H:%M') }}</small>
+                        </div>
+                        <p class="mb-1">{{ comment.content }}</p>
+                    </div>
+                    {% else %}
+                    <div class="text-center text-muted py-3">
+                        <p>No comments yet. Be the first to share your thoughts!</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <!-- Sidebar / Additional Info can go here -->
+        <div class="card bg-light border-0 mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Santa's Tip</h5>
+                <p class="card-text">Make sure to check if this gift is available at local stores to support your community!</p>
+            </div>
+        </div>
+        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary w-100"><i class="bi bi-arrow-left me-2"></i>Back to List</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+blinker==1.9.0
+click==8.3.1
+dnspython==2.8.0
+email-validator==2.3.0
+Flask==3.1.2
+Flask-SQLAlchemy==3.1.1
+Flask-WTF==1.2.2
+idna==3.11
+itsdangerous==2.2.0
+Jinja2==3.1.6
+MarkupSafe==3.0.3
+SQLAlchemy==2.0.44
+typing_extensions==4.15.0
+Werkzeug==3.1.4
+WTForms==3.2.1

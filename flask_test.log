@@ -1,0 +1,78 @@
+ * Serving Flask app 'app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 103-519-779
+Traceback (most recent call last):
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ^
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/sqlalchemy/engine/default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: gift
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/flask/app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/flask/app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/galloro/cli-spec-driven-dev/app.py", line 54, in index
+    results = db.session.execute(stmt).all()
+              ~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/sqlalchemy/orm/scoping.py", line 765, in execute
+    return self._proxied.execute(
+    
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+    
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+    
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+    
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+    
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/sqlalchemy/sql/elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+    
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+    
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+    
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+    ^
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ^
+  File "/Users/galloro/cli-spec-driven-dev/venv/lib/python3.13/site-packages/sqlalchemy/engine/default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: gift
+[SQL: SELECT gift.id, gift.title, gift.description, gift.category, gift.created_at, avg(vote.score) AS avg_score, count(vote.id) AS vote_count 
+FROM gift LEFT OUTER JOIN vote ON gift.id = vote.gift_id GROUP BY gift.id ORDER BY gift.created_at DESC]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+127.0.0.1 - - [09/Dec/2025 10:24:44] "[35m[1mHEAD / HTTP/1.1[0m" 500 -
+127.0.0.1 - - [09/Dec/2025 10:24:44] "HEAD /submit HTTP/1.1" 200 -

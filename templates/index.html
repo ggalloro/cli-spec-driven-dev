@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section">
+    <img src="{{ url_for('static', filename='images/hero.png') }}" alt="Santa Flying" class="hero-image">
+    <div class="hero-text">
+        <h1 class="display-3">North Pole Wishlist</h1>
+        <p class="lead">Discover and share the best holiday gifts!</p>
+    </div>
+</div>
+
+<div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+        <h2 class="mb-0">Gift Ideas</h2>
+    </div>
+    <div class="col-md-4">
+        <form action="{{ url_for('index') }}" method="get" class="d-flex gap-2">
+            <select name="category" class="form-select" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                {% for cat in categories %}
+                <option value="{{ cat }}" {% if current_filter == cat %}selected{% endif %}>{{ cat }}</option>
+                {% endfor %}
+            </select>
+            <select name="sort" class="form-select" onchange="this.form.submit()">
+                <option value="recency" {% if current_sort == 'recency' %}selected{% endif %}>Newest</option>
+                <option value="ranking" {% if current_sort == 'ranking' %}selected{% endif %}>Top Rated</option>
+            </select>
+        </form>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for gift in gifts %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-success">{{ gift.Gift.category }}</span>
+                    <small class="text-muted">{{ gift.Gift.created_at.strftime('%b %d') }}</small>
+                </div>
+                <h5 class="card-title">{{ gift.Gift.title }}</h5>
+                <p class="card-text text-truncate">{{ gift.Gift.description }}</p>
+            </div>
+            <div class="card-footer bg-transparent border-top-0 d-flex justify-content-between align-items-center">
+                <div class="text-primary">
+                    <i class="bi bi-snow2"></i>
+                    {% if gift.avg_score %}
+                        {{ "%.1f"|format(gift.avg_score) }}
+                    {% else %}
+                        -
+                    {% endif %}
+                    <small class="text-muted">({{ gift.vote_count }} votes)</small>
+                </div>
+                <a href="{{ url_for('gift_detail', id=gift.Gift.id) }}" class="btn btn-outline-primary btn-sm">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-center py-5">
+        <h3>No gift ideas found yet!</h3>
+        <p>Be the first to submit a wish.</p>
+        <a href="{{ url_for('submit_gift') }}" class="btn btn-success">Submit Gift Idea</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
