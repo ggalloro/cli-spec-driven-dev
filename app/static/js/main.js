@@ -22,41 +22,52 @@ document.getElementById('giftForm')?.addEventListener('submit', async (e) => {
     }
 });
 
-// Vote
-document.querySelectorAll('.vote-btn').forEach(btn => {
-    btn.addEventListener('click', async (e) => {
-        const id = btn.dataset.id;
-        const score = 5; // Default simple upvote (5 snowflakes) for this iteration, or could prompt user
-        
-        // Let's implement a simple "Like" behavior which sends a 5
-        // Ideally, we'd have a star rater, but spec said "Vote (Upvote/Downvote) OR Score 1-5"
-        // We'll stick to a simple 5 star bump for "Love this!"
+// Vote (Event Delegation)
+document.addEventListener('click', async (e) => {
+    if (e.target.closest('.vote-btn')) {
+        const btn = e.target.closest('.vote-btn');
+        const container = btn.closest('.vote-actions');
+        const id = container.dataset.id;
+        const score = parseInt(btn.dataset.score);
         
         try {
             const res = await fetch(`/api/gifts/${id}/vote`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ score: 5 })
+                body: JSON.stringify({ score: score })
             });
             
             if (res.ok) {
                 const data = await res.json();
-                document.getElementById(`score-${id}`).textContent = data.new_average.toFixed(1);
-                // Also update count text if needed, but it's inside the same span in my HTML? 
-                // Wait, HTML structure was: <span ...>{{ score }}</span> <span ...>({{ count }})</span>
-                // I need to target the count too. 
-                // Let's just update the score for now, user sees immediate feedback.
-                // Ideally I should put IDs on both spans. 
-                // Let's stick to simple "flash" or alert or just the score update.
                 
-                // Animation effect
-                btn.innerHTML = '<span>❤️ Voted!</span>';
-                setTimeout(() => btn.innerHTML = '<span>❤️ Vote</span>', 2000);
+                // Update score display
+                const scoreDisplay = document.getElementById(`score-${id}`);
+                if (scoreDisplay) {
+                    scoreDisplay.textContent = data.new_average.toFixed(1);
+                    // Update count as well (need to find the sibling span)
+                    const countSpan = scoreDisplay.nextElementSibling;
+                    if (countSpan) {
+                         countSpan.textContent = `(${data.total_votes})`;
+                    }
+                }
+                
+                // Visual Feedback
+                // Remove existing feedback if any
+                container.querySelectorAll('.vote-feedback').forEach(el => el.remove());
+                
+                const feedback = document.createElement('span');
+                feedback.className = 'vote-feedback text-xs text-santa-red font-bold ml-1 animate-pulse';
+                feedback.innerText = 'Thanks!';
+                container.appendChild(feedback);
+                
+                setTimeout(() => feedback.remove(), 2000);
+            } else {
+                alert('Error voting. Please try again.');
             }
         } catch (error) {
             console.error('Error voting:', error);
         }
-    });
+    }
 });
 
 // Toggle Comments
