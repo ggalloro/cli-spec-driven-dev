@@ -29,13 +29,13 @@ Arguments:
         a.  **Understand**: Read the task description. **Consult the loaded Technical Specification** for specific requirements, field names, and logic relevant to this task.
         b.  **Implement**: Use `write_file`, `run_shell_command`, etc., to build the feature or configuration.
         c.  **Verify**: Run necessary checks (e.g., `ls`, `cat`, or project specific tests).
-        d.  **Mark Complete**: IMMEDIATELY update the implementation plan file, changing `- [ ] Task Description` to `- [x] Task Description` using the `replace` tool.
+        d.  **Mark Complete**: IMMEDIATELY update the implementation plan file, changing `- [ ] Task Description` to `- [x] Task Description` using the `replace` tool. Never start next phase without asking user first.
 
 3.  **Phase Completion & Review**:
     *   Once all tasks in the Current Phase are marked `[x]`:
-    *   **STOP** execution.
+    *   **STOP** execution. Never start next phase without asking user first
     *   **Report**: Summarize what was built in this phase.
-    *   **Prompt User**: "Phase [Name] is complete. Please review the changes. Ready to proceed to the next phase?"
+    *   **Prompt User**: "Phase [Name] is complete. Please review the changes. Ready to proceed to the next phase? "
 
 4.  **User Interaction**:
     *   **If User Says "Proceed"**: The agent (you) will read the plan again (Step 1), find the *next* incomplete phase, and continue.
