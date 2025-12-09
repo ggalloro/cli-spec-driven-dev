@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center text-center mt-5">
+    <div class="col-md-8">
+        <h1 class="display-1 text-primary">404</h1>
+        <h2>Lost in the Snow?</h2>
+        <p class="lead">It seems you've wandered off the path to Santa's Workshop.</p>
+        <p>The page you are looking for might have been buried under a snowdrift.</p>
+        <a href="{{ url_for('routes.index') }}" class="btn btn-primary btn-lg mt-3">Return Home</a>
+    </div>
+</div>
+{% endblock %}

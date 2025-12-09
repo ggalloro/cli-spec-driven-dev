@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 text-center mb-5">
+        <img src="{{ url_for('static', filename='images/hero.png') }}" class="img-fluid rounded mb-4" alt="Santa Claus flying on his sleigh" style="max-height: 400px; width: 100%; object-fit: cover;">
+        <h1>North Pole Wishlist</h1>
+        <p class="lead">Discover and share the best holiday gift ideas!</p>
+        <a href="{{ url_for('routes.new_gift') }}" class="btn btn-primary btn-lg">Submit a Gift Idea</a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6 offset-md-3">
+        <form action="{{ url_for('routes.index') }}" method="GET" class="d-flex gap-2 justify-content-center">
+            <select name="category" class="form-select" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                <option value="For Kids" {% if current_category == 'For Kids' %}selected{% endif %}>For Kids</option>
+                <option value="For Parents" {% if current_category == 'For Parents' %}selected{% endif %}>For Parents</option>
+                <option value="Stocking Stuffers" {% if current_category == 'Stocking Stuffers' %}selected{% endif %}>Stocking Stuffers</option>
+                <option value="DIY / Homemade" {% if current_category == 'DIY / Homemade' %}selected{% endif %}>DIY / Homemade</option>
+                <option value="Tech & Gadgets" {% if current_category == 'Tech & Gadgets' %}selected{% endif %}>Tech & Gadgets</option>
+                <option value="Decorations" {% if current_category == 'Decorations' %}selected{% endif %}>Decorations</option>
+            </select>
+            <select name="sort_by" class="form-select" onchange="this.form.submit()">
+                <option value="recency" {% if current_sort == 'recency' %}selected{% endif %}>New Arrivals</option>
+                <option value="top_rated" {% if current_sort == 'top_rated' %}selected{% endif %}>Top Rated</option>
+                <option value="most_popular" {% if current_sort == 'most_popular' %}selected{% endif %}>Most Popular</option>
+            </select>
+            {% if current_category or current_sort != 'recency' %}
+                <a href="{{ url_for('routes.index') }}" class="btn btn-outline-secondary">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for gift in gifts %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ gift.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ gift.category }}</h6>
+                <p class="card-text">{{ gift.description|truncate(100) }}</p>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center">
+                 <small class="text-muted">
+                    {% if gift.votes %}
+                        {{ (gift.votes|map(attribute='score')|sum / gift.votes|length)|round(1) }} / 5 Snowflakes
+                    {% else %}
+                        No ratings yet
+                    {% endif %}
+                 </small>
+                <a href="{{ url_for('routes.gift_detail', gift_id=gift.id) }}" class="btn btn-sm btn-outline-secondary">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-center">
+        <p>No gifts submitted yet. Be the first!</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

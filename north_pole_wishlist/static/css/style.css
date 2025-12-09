@@ -1,0 +1,47 @@
+:root {
+    --christmas-red: #D42426;
+    --christmas-green: #165B33;
+    --christmas-white: #F8F9FA;
+    --christmas-gold: #FFD700;
+}
+
+body {
+    background-color: var(--christmas-white);
+    font-family: 'Merryweather', serif;
+}
+
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+    font-family: 'Mountains of Christmas', cursive;
+    color: var(--christmas-red);
+}
+
+.navbar {
+    background-color: var(--christmas-green) !important;
+}
+
+.navbar-brand, .nav-link {
+    color: var(--christmas-white) !important;
+}
+
+.btn-primary {
+    background-color: var(--christmas-red);
+    border-color: var(--christmas-red);
+}
+
+.btn-primary:hover {
+    background-color: #a81c1e;
+    border-color: #a81c1e;
+}
+
+.card {
+    border: 1px solid var(--christmas-gold);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.card-title {
+    color: var(--christmas-green);
+}
+
+.snowflake-icon {
+    color: #a0d3e8; /* Light blue for snowflakes */
+}

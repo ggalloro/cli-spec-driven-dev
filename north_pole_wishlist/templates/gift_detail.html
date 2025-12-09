@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title">{{ gift.title }}</h2>
+                <h5 class="card-subtitle mb-2 text-muted">{{ gift.category }}</h5>
+                <p class="card-text">{{ gift.description }}</p>
+                <p class="card-text"><small class="text-muted">Submitted on {{ gift.created_at.strftime('%Y-%m-%d') }}</small></p>
+            </div>
+            <div class="card-footer">
+                <h3>Rate this Gift</h3>
+                <form action="{{ url_for('routes.vote_gift', gift_id=gift.id) }}" method="POST" class="row g-3 align-items-center">
+                    {{ vote_form.hidden_tag() }}
+                    <div class="col-auto">
+                        {{ vote_form.score.label(class="visually-hidden") }}
+                        {{ vote_form.score(class="form-control", placeholder="Score 1-5") }}
+                    </div>
+                    <div class="col-auto">
+                        {{ vote_form.submit(class="btn btn-success") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <h3>Comments</h3>
+        {% for comment in gift.comments %}
+        <div class="card mb-2">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">{{ comment.author_name }} says:</h6>
+                <p class="card-text">{{ comment.content }}</p>
+                <p class="card-text"><small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</small></p>
+            </div>
+        </div>
+        {% else %}
+        <p>No comments yet.</p>
+        {% endfor %}
+
+        <div class="card mt-4">
+            <div class="card-header">Add a Comment</div>
+            <div class="card-body">
+                <form action="{{ url_for('routes.comment_gift', gift_id=gift.id) }}" method="POST">
+                    {{ comment_form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ comment_form.author_name.label(class="form-label") }}
+                        {{ comment_form.author_name(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ comment_form.content.label(class="form-label") }}
+                        {{ comment_form.content(class="form-control", rows="3") }}
+                    </div>
+                    {{ comment_form.submit(class="btn btn-primary") }}
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h3>Current Rating</h3>
+                 <h1 class="display-4">
+                    {% if gift.votes %}
+                        {{ (gift.votes|map(attribute='score')|sum / gift.votes|length)|round(1) }}
+                    {% else %}
+                        -
+                    {% endif %}
+                 </h1>
+                 <p class="text-muted"><i class="bi bi-snow2 snowflake-icon"></i> Snowflakes</p>
+                 <p>({{ gift.votes|length }} votes)</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
