@@ -9,6 +9,13 @@ This repo has some basic assets to experiment **Spec-Driven Development** using 
 * `.github/workflows`: Contains CI workflow.
 * **No application code**.
 
+## Requirements
+
+The `GEMINI.md` configuration and custom commands require the following extensions:
+* **Google Workspace**
+* **Nano Banana**
+* **GitHub**
+
 ---
 
 ## Step 1: The Architect Phase (/techspec)
