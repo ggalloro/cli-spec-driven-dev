@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "components.html" import gift_card %}
 
 {% block content %}
 
@@ -32,50 +33,6 @@
         </div>
     {% endfor %}
 </div>
-
-<!-- Gift Card Macro -->
-{% macro gift_card(gift) %}
-<div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full">
-    <div class="p-6 flex-grow">
-        <div class="flex justify-between items-start mb-2">
-            <span class="bg-green-100 text-pine-green text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wide">
-                {{ gift.category }}
-            </span>
-            <div class="flex items-center text-yellow-500">
-                <span class="text-lg mr-1">❄️</span>
-                <span class="font-bold" id="score-{{ gift.id }}">{{ "%.1f"|format(gift.average_score) }}</span>
-                <span class="text-gray-400 text-sm ml-1">({{ gift.votes|length }})</span>
-            </div>
-        </div>
-        <h3 class="text-2xl font-bold text-gray-800 mb-2">{{ gift.name }}</h3>
-        <p class="text-gray-600 line-clamp-3">{{ gift.description }}</p>
-    </div>
-    
-    <div class="bg-gray-50 px-6 py-4 border-t border-gray-100 flex justify-between items-center">
-        <button class="vote-btn text-gray-500 hover:text-santa-red transition flex items-center gap-1" data-id="{{ gift.id }}">
-            <span>❤️ Vote</span>
-        </button>
-        <button class="text-gray-500 hover:text-pine-green transition flex items-center gap-1" onclick="toggleComments({{ gift.id }})">
-            <span>💬 Comments</span>
-        </button>
-    </div>
-
-    <!-- Comments Section (Hidden) -->
-    <div id="comments-{{ gift.id }}" class="hidden bg-gray-50 px-6 pb-4 border-t border-gray-200">
-        <div class="mt-4 space-y-3" id="comments-list-{{ gift.id }}">
-            <!-- Comments loaded via JS -->
-             <p class="text-sm text-gray-400 italic">Loading comments...</p>
-        </div>
-        <div class="mt-4">
-            <form onsubmit="postComment(event, {{ gift.id }})" class="flex gap-2">
-                <input type="text" name="content" placeholder="Add a comment..." class="flex-grow border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-pine-green" required minlength="10">
-                <button type="submit" class="bg-pine-green text-white px-3 py-2 rounded-md text-sm hover:bg-green-800">Post</button>
-            </form>
-        </div>
-    </div>
-</div>
-{% endmacro %}
-
 
 <!-- Submit Gift Modal -->
 <div id="giftModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
