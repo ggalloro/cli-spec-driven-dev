@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}North Pole Wishlist{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'santa-red': '#dc2626', // red-600
+                        'pine-green': '#15803d', // green-700
+                        'snow-white': '#f8fafc', // slate-50
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&family=Nunito:wght@400;600;700&display=swap');
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Mountains of Christmas', cursive;
+        }
+        body {
+            font-family: 'Nunito', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-snow-white text-gray-800 flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-santa-red text-white shadow-lg">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/" class="text-3xl font-bold flex items-center gap-2">
+                🎅 North Pole Wishlist
+            </a>
+            <div class="hidden md:flex space-x-6">
+                <a href="#" class="hover:text-yellow-300 transition">Home</a>
+                <a href="#" class="hover:text-yellow-300 transition">About</a>
+                <a href="#" class="hover:text-yellow-300 transition">Contact Elf Support</a>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        {% block hero %}
+        <div class="bg-pine-green text-center py-12 relative overflow-hidden">
+             <!-- Placeholder for Hero Image (using CSS pattern or generic image) -->
+             <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/snow.png')]"></div>
+             <div class="relative z-10 container mx-auto px-4">
+                <h1 class="text-5xl md:text-6xl font-bold mb-4 text-yellow-400 drop-shadow-md">
+                    Santa's Workshop Gift Exchange
+                </h1>
+                <p class="text-xl text-white max-w-2xl mx-auto mb-8">
+                    Share your favorite holiday gift ideas and vote for the best presents of the season!
+                </p>
+                <button onclick="document.getElementById('giftModal').classList.remove('hidden')" class="bg-yellow-400 text-red-800 font-bold py-3 px-8 rounded-full hover:bg-yellow-300 transition transform hover:scale-105 shadow-lg">
+                    🎁 Submit a Gift Idea
+                </button>
+             </div>
+        </div>
+        {% endblock %}
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 flex-grow">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 py-6 mt-auto">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 North Pole Engineering. Made with ❄️ and 🍪.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

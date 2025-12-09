@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Filters & Sorting -->
+<div class="flex flex-col md:flex-row justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
+    <div class="flex gap-4 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+        <a href="{{ url_for('main.index') }}" class="px-4 py-2 rounded-full bg-red-100 text-santa-red hover:bg-santa-red hover:text-white transition whitespace-nowrap">All</a>
+        <a href="{{ url_for('main.index', category='Kids') }}" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 whitespace-nowrap">Kids</a>
+        <a href="{{ url_for('main.index', category='Parents') }}" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 whitespace-nowrap">Parents</a>
+        <a href="{{ url_for('main.index', category='Stocking Stuffers') }}" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 whitespace-nowrap">Stocking Stuffers</a>
+        <a href="{{ url_for('main.index', category='Tech') }}" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 whitespace-nowrap">Tech</a>
+    </div>
+    
+    <div class="flex items-center gap-2 mt-4 md:mt-0">
+        <span class="text-gray-600 font-semibold">Sort by:</span>
+        <select onchange="window.location.href=this.value" class="border rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-santa-red">
+            <option value="{{ url_for('main.index', sort_by='newest', category=request.args.get('category')) }}" {% if request.args.get('sort_by') == 'newest' %}selected{% endif %}>Newest</option>
+            <option value="{{ url_for('main.index', sort_by='nice_list', category=request.args.get('category')) }}" {% if request.args.get('sort_by') == 'nice_list' %}selected{% endif %}>Nice List (Top Rated)</option>
+            <option value="{{ url_for('main.index', sort_by='popularity', category=request.args.get('category')) }}" {% if request.args.get('sort_by') == 'popularity' %}selected{% endif %}>Popularity</option>
+        </select>
+    </div>
+</div>
+
+<!-- Gift Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for gift in gifts %}
+        {{ gift_card(gift) }}
+    {% else %}
+        <div class="col-span-full text-center py-12 text-gray-500">
+            <p class="text-xl">No gifts found on the sleigh yet!</p>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Gift Card Macro -->
+{% macro gift_card(gift) %}
+<div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full">
+    <div class="p-6 flex-grow">
+        <div class="flex justify-between items-start mb-2">
+            <span class="bg-green-100 text-pine-green text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wide">
+                {{ gift.category }}
+            </span>
+            <div class="flex items-center text-yellow-500">
+                <span class="text-lg mr-1">❄️</span>
+                <span class="font-bold" id="score-{{ gift.id }}">{{ "%.1f"|format(gift.average_score) }}</span>
+                <span class="text-gray-400 text-sm ml-1">({{ gift.votes|length }})</span>
+            </div>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-800 mb-2">{{ gift.name }}</h3>
+        <p class="text-gray-600 line-clamp-3">{{ gift.description }}</p>
+    </div>
+    
+    <div class="bg-gray-50 px-6 py-4 border-t border-gray-100 flex justify-between items-center">
+        <button class="vote-btn text-gray-500 hover:text-santa-red transition flex items-center gap-1" data-id="{{ gift.id }}">
+            <span>❤️ Vote</span>
+        </button>
+        <button class="text-gray-500 hover:text-pine-green transition flex items-center gap-1" onclick="toggleComments({{ gift.id }})">
+            <span>💬 Comments</span>
+        </button>
+    </div>
+
+    <!-- Comments Section (Hidden) -->
+    <div id="comments-{{ gift.id }}" class="hidden bg-gray-50 px-6 pb-4 border-t border-gray-200">
+        <div class="mt-4 space-y-3" id="comments-list-{{ gift.id }}">
+            <!-- Comments loaded via JS -->
+             <p class="text-sm text-gray-400 italic">Loading comments...</p>
+        </div>
+        <div class="mt-4">
+            <form onsubmit="postComment(event, {{ gift.id }})" class="flex gap-2">
+                <input type="text" name="content" placeholder="Add a comment..." class="flex-grow border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-pine-green" required minlength="10">
+                <button type="submit" class="bg-pine-green text-white px-3 py-2 rounded-md text-sm hover:bg-green-800">Post</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+
+<!-- Submit Gift Modal -->
+<div id="giftModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
+        <div class="bg-santa-red px-6 py-4 flex justify-between items-center">
+            <h3 class="text-white text-xl font-bold">🎁 Submit a Gift Idea</h3>
+            <button onclick="document.getElementById('giftModal').classList.add('hidden')" class="text-white hover:text-gray-200 text-2xl">&times;</button>
+        </div>
+        <form id="giftForm" class="p-6 space-y-4">
+            <div>
+                <label class="block text-gray-700 font-bold mb-1">Gift Name</label>
+                <input type="text" name="name" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-santa-red" required maxlength="100">
+            </div>
+            <div>
+                <label class="block text-gray-700 font-bold mb-1">Category</label>
+                <select name="category" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-santa-red" required>
+                    <option value="">Select a category</option>
+                    <option value="Kids">For Kids</option>
+                    <option value="Parents">For Parents</option>
+                    <option value="Stocking Stuffers">Stocking Stuffers</option>
+                    <option value="DIY">DIY / Homemade</option>
+                    <option value="Tech">Tech & Gadgets</option>
+                    <option value="Decorations">Decorations</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-gray-700 font-bold mb-1">Description</label>
+                <textarea name="description" rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-santa-red" required maxlength="500"></textarea>
+            </div>
+            <div class="pt-2">
+                <button type="submit" class="w-full bg-santa-red text-white font-bold py-3 rounded-lg hover:bg-red-700 transition shadow-md">
+                    Send to Santa's Workshop
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
