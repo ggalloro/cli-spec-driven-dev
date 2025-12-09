@@ -49,6 +49,7 @@ The user has provided the Technical Specification Google Doc (URL or Name) in th
     - [ ] Add all changes to the repository (`git add .`).
     - [ ] Commit the changes (`git commit -m "Complete implementation of [Project Name]"`).
     - [ ] Push the feature branch to the remote repository, creating a branch with the same name in the remote repository, using the Gemini CLI github MCP server.
+    - [ ] Open a pull request for the feature branch using the Gemini CLI github MCP server.
     ```
 
 4.  **Save Plan**:
