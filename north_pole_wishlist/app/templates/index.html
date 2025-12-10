@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section">
+    <img src="{{ url_for('static', filename='img/hero.png') }}" alt="Santa Sleigh" class="hero-image">
+    <div class="hero-text">
+        <h1 class="festive-font display-4">North Pole Wishlist</h1>
+        <p class="lead">Curating the best gifts for this holiday season!</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="btn-group" role="group">
+            <a href="{{ url_for('main.index', sort='ranking', category=request.args.get('category')) }}" class="btn {% if request.args.get('sort') != 'recency' %}btn-christmas-green text-white{% else %}btn-outline-secondary{% endif %}">Nice List (Top Rated)</a>
+            <a href="{{ url_for('main.index', sort='recency', category=request.args.get('category')) }}" class="btn {% if request.args.get('sort') == 'recency' %}btn-christmas-green text-white{% else %}btn-outline-secondary{% endif %}">New Arrivals</a>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <form action="{{ url_for('main.index') }}" method="get">
+            <input type="hidden" name="sort" value="{{ request.args.get('sort', 'ranking') }}">
+            <select class="form-select" name="category" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                {% for cat in ['Kids', 'Parents', 'Stocking Stuffers', 'DIY', 'Tech', 'Decorations'] %}
+                <option value="{{ cat }}" {% if request.args.get('category') == cat %}selected{% endif %}>{{ cat }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for gift in gifts %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom-0 pt-3">
+                <span class="badge bg-danger rounded-pill">{{ gift.category }}</span>
+                <small class="text-muted"><img src="{{ url_for('static', filename='img/snowflake.png') }}" width="20" height="20"> {{ "%.1f"|format(gift.avg_score|default(0.0)) }} ({{ gift.vote_count }} votes)</small>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title festive-font text-christmas-red"><a href="{{ url_for('main.gift_detail', id=gift.id) }}" class="text-decoration-none text-christmas-red">{{ gift.title }}</a></h5>
+                <p class="card-text">{{ gift.description[:100] }}{% if gift.description|length > 100 %}...{% endif %}</p>
+            </div>
+            <div class="card-footer bg-white border-top-0 pb-3 text-center">
+                 <a href="{{ url_for('main.gift_detail', id=gift.id) }}" class="btn btn-outline-danger btn-sm">View & Vote</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-center py-5">
+        <h3>No gift ideas found under this category. Be the first to add one!</h3>
+        <a href="{{ url_for('main.submit_gift') }}" class="btn btn-christmas-green text-white mt-3">Submit Gift Idea</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

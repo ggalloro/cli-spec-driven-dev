@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}{{ gift.title }} - North Pole Wishlist{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}" class="text-christmas-red">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ gift.title }}</li>
+            </ol>
+        </nav>
+
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h1 class="festive-font display-5 text-christmas-red">{{ gift.title }}</h1>
+                    <span class="badge bg-danger fs-6">{{ gift.category }}</span>
+                </div>
+                <p class="lead">{{ gift.description }}</p>
+                <div class="text-muted">
+                    Submitted on {{ gift.created_at.strftime('%B %d, %Y') }}
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-christmas-green text-white">
+                <h4 class="mb-0 festive-font">Comments ({{ gift.comments|length }})</h4>
+            </div>
+            <div class="card-body">
+                {% if gift.comments %}
+                    <ul class="list-unstyled">
+                    {% for comment in gift.comments %}
+                        <li class="mb-3 border-bottom pb-3">
+                            <div class="d-flex justify-content-between">
+                                <strong class="text-christmas-red">{{ comment.user_name }}</strong>
+                                <small class="text-muted">{{ comment.created_at.strftime('%b %d, %H:%M') }}</small>
+                            </div>
+                            <p class="mb-0 mt-1">{{ comment.content }}</p>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted fst-italic">No comments yet. Be the first elf to say something!</p>
+                {% endif %}
+
+                <hr>
+                <h5 class="festive-font">Leave a Comment</h5>
+                <form action="{{ url_for('main.add_comment', id=gift.id) }}" method="post">
+                    <div class="mb-3">
+                        <label for="user_name" class="form-label">Name (Optional)</label>
+                        <input type="text" class="form-control" id="user_name" name="user_name" placeholder="Secret Santa">
+                    </div>
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Comment</label>
+                        <textarea class="form-control" id="content" name="content" rows="3" required minlength="10" maxlength="500"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-christmas-green text-white">Post Comment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-4 text-center">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0 festive-font">Naughty or Nice?</h4>
+            </div>
+            <div class="card-body">
+                <h2 class="display-4">{{ "%.1f"|format(avg_score) }}</h2>
+                <div class="mb-2">
+                    {% for i in range(1, 6) %}
+                        {% if i <= avg_score|round|int %}
+                        <img src="{{ url_for('static', filename='img/snowflake.png') }}" width="32" height="32" alt="snowflake">
+                        {% else %}
+                        <span class="text-muted fs-2">❄</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <p class="text-muted">{{ vote_count }} Votes</p>
+                <hr>
+                <h5>Rate this Gift:</h5>
+                <form action="{{ url_for('main.vote_gift', id=gift.id) }}" method="post" class="d-flex justify-content-center gap-2">
+                    {% for i in range(1, 6) %}
+                    <button type="submit" name="score" value="{{ i }}" class="btn btn-outline-warning border-0 p-1" title="{{ i }} Snowflake">
+                        <img src="{{ url_for('static', filename='img/snowflake.png') }}" width="24" height="24">
+                        <div class="small">{{ i }}</div>
+                    </button>
+                    {% endfor %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

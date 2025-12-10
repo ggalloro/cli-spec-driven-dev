@@ -1,0 +1,89 @@
+:root {
+    --christmas-red: #D42426;
+    --christmas-green: #165B33;
+    --snow-white: #F8F9FA;
+    --gold: #FFD700;
+    --silver: #C0C0C0;
+}
+
+body {
+    background-color: var(--snow-white);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-image: radial-gradient(#e6e6e6 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.festive-font {
+    font-family: 'Mountains of Christmas', cursive;
+    font-weight: 700;
+}
+
+.bg-christmas-red {
+    background-color: var(--christmas-red) !important;
+}
+
+.text-christmas-red {
+    color: var(--christmas-red) !important;
+}
+
+.btn-christmas-green {
+    background-color: var(--christmas-green);
+    border-color: var(--christmas-green);
+    transition: all 0.3s ease;
+}
+
+.btn-christmas-green:hover {
+    background-color: #0f4024;
+    border-color: #0f4024;
+    box-shadow: 0 0 10px rgba(22, 91, 51, 0.5);
+    transform: scale(1.05);
+}
+
+.card {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 10px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(212, 36, 38, 0.15);
+}
+
+.hero-section {
+    position: relative;
+    text-align: center;
+    color: white;
+    margin-bottom: 2rem;
+    border-radius: 0 0 15px 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.hero-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+}
+
+.hero-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    background-color: rgba(0,0,0,0.3);
+    padding: 20px;
+    border-radius: 10px;
+    backdrop-filter: blur(2px);
+}
+
+.rating-snowflake {
+    color: var(--silver);
+    font-size: 1.5rem;
+}
+
+.rating-snowflake.active {
+    color: var(--gold);
+}
