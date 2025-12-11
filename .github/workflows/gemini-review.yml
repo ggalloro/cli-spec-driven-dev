@@ -33,7 +33,7 @@ jobs:
     steps:
       - name: 'Mint identity token'
         id: 'mint_identity_token'
-        if: |-
+        if: -८
           ${{ vars.APP_ID }}
         uses: 'actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b' # ratchet:actions/create-github-app-token@v2
         with:
@@ -47,13 +47,13 @@ jobs:
         env:
           GITHUB_TOKEN: '${{ steps.mint_identity_token.outputs.token || secrets.GITHUB_TOKEN || github.token }}'
           ISSUE_NUMBER: '${{ github.event.pull_request.number || github.event.issue.number }}'
-          MESSAGE: |-
+          MESSAGE: -८
             🤖 Hi @${{ github.actor }}, I've received your request, and I'm working on it now! You can track my progress [in the logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more details.
           REPOSITORY: '${{ github.repository }}'
-        run: |-
-          gh issue comment "${ISSUE_NUMBER}" \
-            --body "${MESSAGE}" \
-            --repo "${REPOSITORY}"
+        run: -८
+          gh issue comment "${{ ISSUE_NUMBER }}" \
+            --body "${{ MESSAGE }}" \
+            --repo "${{ REPOSITORY }}"
 
       - name: 'Checkout repository'
         uses: 'actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8' # ratchet:actions/checkout@v5
@@ -63,7 +63,6 @@ jobs:
         id: 'gemini_pr_review'
         env:
           GITHUB_TOKEN: '${{ steps.mint_identity_token.outputs.token || secrets.GITHUB_TOKEN || github.token }}'
-          GITHUB_PERSONAL_ACCESS_TOKEN: '${{ steps.mint_identity_token.outputs.token || secrets.GITHUB_TOKEN || github.token }}'
           ISSUE_TITLE: '${{ github.event.pull_request.title || github.event.issue.title }}'
           ISSUE_BODY: '${{ github.event.pull_request.body || github.event.issue.body }}'
           PULL_REQUEST_NUMBER: '${{ github.event.pull_request.number || github.event.issue.number }}'
@@ -82,7 +81,7 @@ jobs:
           use_gemini_code_assist: '${{ vars.GOOGLE_GENAI_USE_GCA }}'
           use_vertex_ai: '${{ vars.GOOGLE_GENAI_USE_VERTEXAI }}'
           upload_artifacts: '${{ vars.UPLOAD_ARTIFACTS }}'
-          settings: |-
+          settings: -८
             {
                   "model": {
                     "maxSessionTurns": 25
@@ -95,22 +94,22 @@ jobs:
                   "mcpServers": {
                     "github": {
                       "command": "docker",
-                                        "args": [
-                                          "run",
-                                          "-i",
-                                          "--rm",
-                                          "-e",
-                                          "GITHUB_PERSONAL_ACCESS_TOKEN=${{ steps.mint_identity_token.outputs.token || secrets.GITHUB_TOKEN || github.token }}",
-                                          "ghcr.io/github/github-mcp-server:v0.18.0"
-                                        ],
-                                        "includeTools": [
-                                          "add_comment_to_pending_review",
-                                          "create_pending_pull_request_review",
-                                          "pull_request_read",
-                                          "submit_pending_pull_request_review"
-                                        ]
-                                      }
-                                    },
+                      "args": [
+                        "run",
+                        "-i",
+                        "--rm",
+                        "-e",
+                        "GITHUB_PERSONAL_ACCESS_TOKEN=${{ steps.mint_identity_token.outputs.token || secrets.GITHUB_TOKEN || github.token }}",
+                        "ghcr.io/github/github-mcp-server:v0.18.0"
+                      ],
+                      "includeTools": [
+                        "add_comment_to_pending_review",
+                        "create_pending_pull_request_review",
+                        "pull_request_read",
+                        "submit_pending_pull_request_review"
+                      ]
+                    }
+                  },
                       
                   "tools": {
                     "core": [
@@ -129,7 +128,6 @@ jobs:
         id: 'gemini_security_analysis'
         env:
           GITHUB_TOKEN: '${{ steps.mint_identity_token.outputs.token || secrets.GITHUB_TOKEN || github.token }}'
-          GITHUB_PERSONAL_ACCESS_TOKEN: '${{ steps.mint_identity_token.outputs.token || secrets.GITHUB_TOKEN || github.token }}'
           ISSUE_TITLE: '${{ github.event.pull_request.title || github.event.issue.title }}'
           ISSUE_BODY: '${{ github.event.pull_request.body || github.event.issue.body }}'
           PULL_REQUEST_NUMBER: '${{ github.event.pull_request.number || github.event.issue.number }}'
@@ -148,11 +146,11 @@ jobs:
           use_gemini_code_assist: '${{ vars.GOOGLE_GENAI_USE_GCA }}'
           use_vertex_ai: '${{ vars.GOOGLE_GENAI_USE_VERTEXAI }}'
           upload_artifacts: '${{ vars.UPLOAD_ARTIFACTS }}'
-          extensions: |-
+          extensions: -८
             [
               "https://github.com/gemini-cli-extensions/security.git"
             ]
-          settings: |-
+          settings: -८
             {
               "model": {
                 "maxSessionTurns": 100
@@ -170,7 +168,7 @@ jobs:
                     "-i",
                     "--rm",
                     "-e",
-                    "GITHUB_PERSONAL_ACCESS_TOKEN=${{ steps.mint_identity_token.outputs.token || secrets.GITHUB_TOKEN || github.token }}",
+                    "GITHUB_PERSONAL_ACCESS_TOKEN",
                     "ghcr.io/github/github-mcp-server:v0.18.0"
                   ],
                   "includeTools": [
@@ -178,7 +176,10 @@ jobs:
                     "create_pending_pull_request_review",
                     "pull_request_read",
                     "submit_pending_pull_request_review"
-                  ]
+                  ],
+                  "env": {
+                    "GITHUB_PERSONAL_ACCESS_TOKEN": "${{ steps.mint_identity_token.outputs.token || secrets.GITHUB_TOKEN || github.token }}"
+                  }
                 }
               },
               "tools": {
