@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">{{ gift.title }}</h2>
+                    <h6 class="card-subtitle mb-3 text-muted">{{ gift.category }}</h6>
+                    <p class="card-text lead">{{ gift.description }}</p>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div id="rating-display">
+                            <span class="h4 me-2">Rating: <span id="avg-score">{{ gift_stats.avg_score }}</span>/5</span>
+                            <span class="text-muted">(<span id="total-votes">{{ gift_stats.total_votes }}</span> votes)</span>
+                        </div>
+                        <div class="voting-controls">
+                            <span class="me-2">Rate this gift:</span>
+                            {% for i in range(1, 6) %}
+                            <button class="btn btn-outline-warning btn-sm vote-btn" data-gift-id="{{ gift.id }}" data-score="{{ i }}">
+                                <i class="far fa-snowflake"></i>
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comments Section -->
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Comments</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Comment Form -->
+                    <form action="{{ url_for('main.add_comment', id=gift.id) }}" method="POST" class="mb-4">
+                        <div class="mb-3">
+                            <label for="author_name" class="form-label">Your Name (Optional)</label>
+                            <input type="text" class="form-control" id="author_name" name="author_name" placeholder="Secret Santa">
+                        </div>
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Comment</label>
+                            <textarea class="form-control" id="content" name="content" rows="3" required minlength="10" maxlength="500"></textarea>
+                            <div class="form-text">Min 10 chars, Max 500 chars.</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Post Comment</button>
+                    </form>
+
+                    <!-- Comment List -->
+                    <div class="list-group list-group-flush">
+                        {% for comment in comments %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1 text-success">{{ comment.author_name }}</h5>
+                                <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </div>
+                            <p class="mb-1">{{ comment.content }}</p>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-3 text-muted">
+                            No comments yet. Be the first to say something!
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const voteBtns = document.querySelectorAll('.vote-btn');
+    
+    voteBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const giftId = this.dataset.giftId;
+            const score = parseInt(this.dataset.score);
+            
+            fetch(`/gift/${giftId}/vote`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ score: score })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    document.getElementById('avg-score').textContent = data.new_average;
+                    document.getElementById('total-votes').textContent = data.total_votes;
+                    // Optional: Visual feedback on buttons
+                    alert('Vote submitted! Thanks!');
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,96 @@
+:root {
+    --santa-red: #D42426;
+    --forest-green: #146B3A;
+    --snow-white: #F8F9FA;
+    --gold-accent: #FFD700;
+}
+
+body {
+    background-color: var(--snow-white);
+    font-family: 'Lato', sans-serif;
+    color: #333;
+}
+
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+    font-family: 'Mountains of Christmas', cursive;
+    color: var(--santa-red);
+}
+
+.navbar {
+    background-color: var(--forest-green) !important;
+    border-bottom: 5px solid var(--gold-accent);
+}
+
+.navbar-brand, .nav-link {
+    color: var(--snow-white) !important;
+    font-size: 1.5rem;
+}
+
+.nav-link:hover {
+    color: var(--gold-accent) !important;
+}
+
+.btn-primary {
+    background-color: var(--santa-red);
+    border-color: var(--santa-red);
+}
+
+.btn-primary:hover {
+    background-color: #b01b1d;
+    border-color: #b01b1d;
+}
+
+.btn-outline-secondary {
+    color: var(--forest-green);
+    border-color: var(--forest-green);
+}
+
+.btn-outline-secondary:hover, .btn-outline-secondary.active {
+    background-color: var(--forest-green);
+    color: var(--snow-white);
+}
+
+.card {
+    border: 2px solid var(--forest-green);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-title {
+    color: var(--santa-red);
+    font-weight: bold;
+}
+
+.card-subtitle {
+    color: var(--forest-green) !important;
+}
+
+.hero-section {
+    position: relative;
+    text-align: center;
+    color: white;
+    margin-bottom: 2rem;
+}
+
+.hero-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-bottom: 5px solid var(--gold-accent);
+}
+
+.hero-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(20, 107, 58, 0.7); /* Forest Green with opacity */
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid var(--gold-accent);
+}

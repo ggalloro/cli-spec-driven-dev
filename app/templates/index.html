@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero-section">
+    <img src="{{ url_for('static', filename='img/hero.png') }}" alt="Santa's Sleigh" class="hero-image">
+    <div class="hero-text">
+        <h1>North Pole Wishlist</h1>
+        <p class="lead">Discover and share the best holiday gifts!</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Gift Ideas</h1>
+    </div>
+    <div class="col-md-4 text-end">
+        <div class="btn-group" role="group">
+            <a href="{{ url_for('main.index', sort='new', category=current_category) }}" class="btn btn-outline-secondary {% if current_sort == 'new' %}active{% endif %}">New</a>
+            <a href="{{ url_for('main.index', sort='popular', category=current_category) }}" class="btn btn-outline-secondary {% if current_sort == 'popular' %}active{% endif %}">Popular</a>
+            <a href="{{ url_for('main.index', sort='top_rated', category=current_category) }}" class="btn btn-outline-secondary {% if current_sort == 'top_rated' %}active{% endif %}">Top Rated</a>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Filter by Category: {{ current_category if current_category else 'All' }}
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url_for('main.index', sort=current_sort) }}">All</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('main.index', category='For Kids', sort=current_sort) }}">For Kids</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('main.index', category='For Parents', sort=current_sort) }}">For Parents</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('main.index', category='Stocking Stuffers', sort=current_sort) }}">Stocking Stuffers</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('main.index', category='DIY / Homemade', sort=current_sort) }}">DIY / Homemade</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('main.index', category='Tech & Gadgets', sort=current_sort) }}">Tech & Gadgets</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('main.index', category='Decorations', sort=current_sort) }}">Decorations</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for gift in gifts %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ gift.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ gift.category }}</h6>
+                <p class="card-text">{{ gift.description }}</p>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center">
+                <small class="text-muted">
+                    {% set score = gift_stats[gift.id]['avg_score'] %}
+                    {% for i in range(1, 6) %}
+                        {% if score >= i %}
+                            <i class="fas fa-snowflake text-primary"></i>
+                        {% elif score >= i - 0.5 %}
+                             <i class="fas fa-snowflake text-primary" style="opacity: 0.5;"></i>
+                        {% else %}
+                            <i class="far fa-snowflake text-muted"></i>
+                        {% endif %}
+                    {% endfor %}
+                    ({{ gift_stats[gift.id]['total_votes'] }})
+                </small>
+                <a href="{{ url_for('main.gift_detail', id=gift.id) }}" class="btn btn-sm btn-outline-primary">View & Vote</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-center">
+        <p>No gift ideas found. Be the first to submit one!</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
