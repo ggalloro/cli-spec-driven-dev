@@ -67,148 +67,64 @@ def create_gift():
         flash('Gift idea submitted successfully!', 'success')
         return redirect(url_for('main.index'))
         
-        return render_template('create_gift.html')
-        
+    return render_template('create_gift.html')
+
+@bp.route('/gift/<int:id>')
+def gift_detail(id):
+    stmt = sa.select(GiftIdea).options(selectinload(GiftIdea.votes), selectinload(GiftIdea.comments)).where(GiftIdea.id == id)
+    gift = db.session.scalars(stmt).first()
     
-        
-    @bp.route('/gift/<int:id>')
-        
+    if not gift:
+        flash('Gift not found.', 'danger')
+        return redirect(url_for('main.index'))
     
-        
-    def gift_detail(id):
-        
+    # Calculate stats
+    total_votes = len(gift.votes)
+    avg_score = sum(v.score for v in gift.votes) / total_votes if total_votes > 0 else 0
+    gift_stats = {
+        'total_votes': total_votes,
+        'avg_score': round(avg_score, 1)
+    }
     
-        
-        stmt = sa.select(GiftIdea).options(selectinload(GiftIdea.votes), selectinload(GiftIdea.comments)).where(GiftIdea.id == id)
-        
+    # Sort comments: Oldest first
+    comments = sorted(gift.comments, key=lambda c: c.created_at)
+
+    return render_template('gift_detail.html', gift=gift, gift_stats=gift_stats, comments=comments)
+
+@bp.route('/gift/<int:id>/vote', methods=['POST'])
+def vote(id):
+    data = request.get_json()
+    score = data.get('score')
     
+    if not score or score not in range(1, 6):
+        return {'error': 'Invalid score'}, 400
         
-        gift = db.session.scalars(stmt).first()
-        
+    vote = Vote(gift_id=id, score=score)
+    db.session.add(vote)
+    db.session.commit()
     
-        
-        
-        
+    # Recalculate stats to return
+    gift = db.session.get(GiftIdea, id)
+    total_votes = len(gift.votes)
+    avg_score = sum(v.score for v in gift.votes) / total_votes if total_votes > 0 else 0
     
-        
-        if not gift:
-        
+    return {
+        'new_average': round(avg_score, 1),
+        'total_votes': total_votes
+    }
+
+@bp.route('/gift/<int:id>/comment', methods=['POST'])
+def add_comment(id):
+    content = request.form.get('content')
+    author_name = request.form.get('author_name') or "Anonymous Elf"
     
-        
-    
-        
-            flash('Gift not found.', 'danger')
-        
-            return redirect(url_for('main.index'))
-        
-        
-        
-        # Calculate stats
-        
-        total_votes = len(gift.votes)
-        
-        avg_score = sum(v.score for v in gift.votes) / total_votes if total_votes > 0 else 0
-        
-        gift_stats = {
-        
-            'total_votes': total_votes,
-        
-            'avg_score': round(avg_score, 1)
-        
-        }
-        
-        
-        
-        # Sort comments: Newest first (chrono order usually means oldest first for convos, but spec says "chronological order" which implies oldest first. "New Arrivals" is newest first. I'll stick to oldest first for comments as is standard)
-        
-        # Spec: "Display: Comments appear in chronological order under the relevant gift idea." -> Oldest top.
-        
-        # Actually, SQLAlchemy relationship usually loads in insertion order, but explicit sort is safer.
-        
-        # I'll rely on default for now or sort in template if needed, but relationship doesn't have order_by.
-        
-        # Let's add explicit sort in query if needed, or just sort in python.
-        
-        comments = sorted(gift.comments, key=lambda c: c.created_at)
-        
-    
-        
-        return render_template('gift_detail.html', gift=gift, gift_stats=gift_stats, comments=comments)
-        
-    
-        
-    @bp.route('/gift/<int:id>/vote', methods=['POST'])
-        
-    def vote(id):
-        
-        data = request.get_json()
-        
-        score = data.get('score')
-        
-        
-        
-        if not score or score not in range(1, 6):
-        
-            return {'error': 'Invalid score'}, 400
-        
-            
-        
-        vote = Vote(gift_id=id, score=score)
-        
-        db.session.add(vote)
-        
-        db.session.commit()
-        
-        
-        
-        # Recalculate stats to return
-        
-        gift = db.session.get(GiftIdea, id)
-        
-        total_votes = len(gift.votes)
-        
-        avg_score = sum(v.score for v in gift.votes) / total_votes if total_votes > 0 else 0
-        
-        
-        
-        return {
-        
-            'new_average': round(avg_score, 1),
-        
-            'total_votes': total_votes
-        
-        }
-        
-    
-        
-    @bp.route('/gift/<int:id>/comment', methods=['POST'])
-        
-    def add_comment(id):
-        
-        content = request.form.get('content')
-        
-        author_name = request.form.get('author_name') or "Anonymous Elf"
-        
-        
-        
-        if not content or len(content) < 10 or len(content) > 500:
-        
-            flash('Comment must be between 10 and 500 characters.', 'danger')
-        
-            return redirect(url_for('main.gift_detail', id=id))
-        
-            
-        
-        comment = Comment(gift_id=id, content=content, author_name=author_name)
-        
-        db.session.add(comment)
-        
-        db.session.commit()
-        
-        
-        
-        flash('Comment added!', 'success')
-        
+    if not content or len(content) < 10 or len(content) > 500:
+        flash('Comment must be between 10 and 500 characters.', 'danger')
         return redirect(url_for('main.gift_detail', id=id))
         
+    comment = Comment(gift_id=id, content=content, author_name=author_name)
+    db.session.add(comment)
+    db.session.commit()
     
+    flash('Comment added!', 'success')
+    return redirect(url_for('main.gift_detail', id=id))
