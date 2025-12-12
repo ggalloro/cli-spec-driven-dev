@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section text-center rounded">
+    <div class="hero-text">
+        <h1>North Pole Wishlist</h1>
+        <p class="lead fs-3">Curating the best gifts for the season!</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Category: {{ current_category if current_category else 'All' }}
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
+                    <li><a class="dropdown-item" href="{{ url_for('home', sort=current_sort) }}">All</a></li>
+                    {% for category in categories %}
+                        <li><a class="dropdown-item" href="{{ url_for('home', category=category.value, sort=current_sort) }}">{{ category.value }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="btn-group" role="group" aria-label="Sorting">
+                <a href="{{ url_for('home', sort='new', category=current_category) }}" class="btn btn-outline-primary {{ 'active' if current_sort == 'new' else '' }}">New Arrivals</a>
+                <a href="{{ url_for('home', sort='popular', category=current_category) }}" class="btn btn-outline-primary {{ 'active' if current_sort == 'popular' else '' }}">Most Popular</a>
+                <a href="{{ url_for('home', sort='top_rated', category=current_category) }}" class="btn btn-outline-primary {{ 'active' if current_sort == 'top_rated' else '' }}">Top Rated</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for gift in gifts %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ gift.name }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ gift.category }}</h6>
+                <p class="card-text">{{ gift.description|truncate(100) }}</p>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        {% if gift.vote_count > 0 %}
+                            Score: {{ "%.1f"|format(gift.avg_score) }} ({{ gift.vote_count }} votes)
+                        {% else %}
+                            No votes yet
+                        {% endif %}
+                    </small>
+                    <a href="{{ url_for('gift_details', id=gift.id) }}" class="btn btn-sm btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-center">
+        <p>No gift ideas found. Be the first to submit one!</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

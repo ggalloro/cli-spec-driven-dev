@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title">{{ gift.name }}</h2>
+                <h5 class="text-muted mb-3">{{ gift.category }}</h5>
+                <p class="card-text">{{ gift.description }}</p>
+                <hr>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Current Rating:</strong> 
+                        {% if avg_score > 0 %}
+                            {{ "%.1f"|format(avg_score) }} / 5 ({{ vote_count }} votes)
+                        {% else %}
+                            No votes yet
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h4>Comments</h4>
+                {% if comments %}
+                    {% for comment in comments %}
+                        <div class="border-bottom pb-2 mb-2">
+                            <strong>{{ comment.author_name }}</strong> <small class="text-muted">- {{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                            <p class="mb-0">{{ comment.content }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">No comments yet. Be the first to share your thoughts!</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>Leave a Comment</h5>
+                <form method="POST" action="{{ url_for('post_comment', id=gift.id) }}">
+                    {{ comment_form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ comment_form.author_name.label(class="form-label") }}
+                        {{ comment_form.author_name(class="form-control", placeholder="Anonymous Elf") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ comment_form.content.label(class="form-label") }}
+                        {{ comment_form.content(class="form-control", rows=3) }}
+                        {% for error in comment_form.content.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {{ comment_form.submit(class="btn btn-primary") }}
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5>Rate this Gift</h5>
+                <form method="POST" action="{{ url_for('cast_vote', id=gift.id) }}">
+                    {{ vote_form.hidden_tag() }}
+                    <div class="mb-3">
+                        {% for subfield in vote_form.score %}
+                            <div class="form-check">
+                                {{ subfield(class="form-check-input") }}
+                                {{ subfield.label(class="form-check-label") }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {{ vote_form.submit(class="btn btn-warning w-100") }}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
