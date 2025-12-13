@@ -1,94 +1,68 @@
-# Spec-Driven Development w Gemini CLI
+# Podcast Generator
 
-This repo has some basic assets to experiment **Spec-Driven Development** using the Gemini CLI. You will act as a developer going from a raw Functional Specification to a deployed Pull Request in a single session.
+An AI-powered application that turns your favorite RSS feeds into a personalized news podcast.
 
-## Assets
+## Features
 
-* `.gemini/commands/`: Contains configuration files for custom commands (`techspec`, `plan`, `build`).
-* `GEMINI.md`: Contains project rules and guidelines.
-* `.github/workflows`: Contains CI workflow.
-* **No application code**.
+-   **RSS Feed Management**: Add, view, and remove RSS feeds.
+-   **AI Summarization**: Automatically fetches and summarizes the latest articles from your feeds using Google Gemini.
+-   **Audio Generation**: Converts summaries into natural-sounding speech.
+-   **Podcast Assembly**: Stitches intro, segments, and outro into a single MP3 file.
+-   **Playback & Download**: Listen to your generated podcasts directly in the app or download them.
 
-## Requirements
+## Architecture
 
-The `GEMINI.md` configuration and custom commands require the following extensions:
-* **Google Workspace**
-* **Nano Banana**
-* **GitHub**
+-   **Frontend**: Next.js (App Router), Tailwind CSS, Lucide Icons.
+-   **Backend**: Next.js API Routes.
+-   **Database**: SQLite with Prisma ORM.
+-   **AI**: Google Gemini API (`gemini-1.5-flash`) for summarization.
+-   **Audio**: `google-tts-api` (fallback) or configured TTS service, processed with `fluent-ffmpeg`.
 
----
+## Prerequisites
 
-## Step 1: The Architect Phase (/techspec)
+-   Node.js (v18+)
+-   FFmpeg installed on your system (required for audio stitching).
+    -   macOS: `brew install ffmpeg`
+    -   Linux: `sudo apt install ffmpeg`
+-   Google Gemini API Key.
 
-**Goal:** Transform a Functional Spec (Google Doc) into a Technical Spec (Google Doc).
+## Setup
 
-1. **Command:**
-   ```
-   /techspec "Name of your functional specs doc" "Your desired technology stack and requirements"
-   ```
+1.  **Clone the repository**:
+    ```bash
+    git clone <repository-url>
+    cd podcast-generator
+    ```
 
-2. **What Happens:**
-    * The agent searches your Drive for the doc.
-    * It reads the requirements.
-    * It generates a **Technical Specification** including Data Models, API Routes, and Architecture based on your inputs.
-    * **Output:** It creates a *new* Google Doc titled "Technical Specification - Application name" and gives you the link.
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
 
----
+3.  **Environment Variables**:
+    Create a `.env` file in the root directory:
+    ```env
+    DATABASE_URL="file:./dev.db"
+    GEMINI_API_KEY="your_gemini_api_key_here"
+    ```
 
-## Step 2: The Planning Phase (/plan)
+4.  **Database Setup**:
+    ```bash
+    npx prisma migrate dev --name init
+    ```
 
-**Goal:** Break the Technical Spec down into an atomic Implementation Plan.
+5.  **Run Development Server**:
+    ```bash
+    npm run dev
+    ```
+    Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-1. **Command:**
-   ```
-   /plan "Name of your Tech spec doc"
-   ```
-   *(Use the exact name of the doc generated in Step 1)*
+## Usage
 
-2. **What Happens:**
-    * The agent reads the Tech Spec.
-    * It creates a local file `IMPLEMENTATION_PLAN.md`.
-    * It breaks the project into phases (e.g., Setup, Backend, Frontend, Polish).
-    * It defines the Git strategy.
+1.  **Add Feeds**: Enter an RSS URL (e.g., `https://feeds.npr.org/1001/rss.xml`) and click "Add".
+2.  **Generate**: Click the "Generate Podcast" button. Wait for the AI to process (1-2 mins).
+3.  **Listen**: Click play on the generated episode or download it.
 
----
+## License
 
-## Step 3: The Build Phase (/build)
-
-**Goal:** Execute the plan and write the code.
-
-1. **Command:**
-   ```
-   /build IMPLEMENTATION_PLAN.md "Name of your Tech spec doc"
-   ```
-
-2. **What Happens (Iterative):**
-    * **Execution:** The agent iterates through the plan, initializing the project structure and writing the application code.
-    * **Visuals:** It generates necessary visual assets (images, icons) as defined in the spec.
-    * **Progress:** It updates `IMPLEMENTATION_PLAN.md` as tasks are completed.
-
----
-
-## Step 4: Final Delivery
-
-**Goal:** Push the code and open a Pull Request.
-
-1. **Action:**
-   The `/build` command's final phase usually covers this, or you can manually instruct the agent to finalize the project.
-
-2. **What Happens:**
-    * The agent runs final checks (linting/formatting).
-    * It creates a `README.md` for the new application.
-    * It commits all changes.
-    * It pushes the feature branch to GitHub.
-    * It uses the GitHub extension to **Open a Pull Request**.
-
----
-
-## Summary of Commands
-
-| Step | Command | Input | Output |
-| :--- | :--- | :--- | :--- |
-| **1. Spec** | `/techspec` | Functional Doc (Drive) | Tech Spec (Drive) |
-| **2. Plan** | `/plan` | Tech Spec (Drive) | `IMPLEMENTATION_PLAN.md` |
-| **3. Build** | `/build` | Plan + Tech Spec | Code, Assets, App |
+MIT
