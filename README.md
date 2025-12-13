@@ -1,94 +1,72 @@
-# Spec-Driven Development w Gemini CLI
+# AI News Anchor - Podcast Generator
 
-This repo has some basic assets to experiment **Spec-Driven Development** using the Gemini CLI. You will act as a developer going from a raw Functional Specification to a deployed Pull Request in a single session.
+A Next.js application that automatically generates personalized news podcasts from your favorite RSS feeds using Google Gemini for summarization and Google Cloud Text-to-Speech for narration.
 
-## Assets
+## Features
 
-* `.gemini/commands/`: Contains configuration files for custom commands (`techspec`, `plan`, `build`).
-* `GEMINI.md`: Contains project rules and guidelines.
-* `.github/workflows`: Contains CI workflow.
-* **No application code**.
+-   **RSS Feed Management**: Add and manage your favorite news sources (RSS/Atom feeds).
+-   **AI Summarization**: Uses Google's **Gemini 2.5 Flash** model to read articles and generate concise, conversational summaries suitable for a podcast format.
+-   **Neural Text-to-Speech**: Converts the generated script into high-quality, natural-sounding audio using Google Cloud TTS.
+-   **Audio Compilation**: Merges intro, story segments, and outro into a single downloadable MP3 file.
+-   **Podcast History**: Listen to or download previous daily digests.
+-   **Modern UI**: Built with Next.js App Router and Tailwind CSS, featuring a responsive dark mode design.
 
-## Requirements
+## Architecture
 
-The `GEMINI.md` configuration and custom commands require the following extensions:
-* **Google Workspace**
-* **Nano Banana**
-* **GitHub**
+-   **Frontend**: Next.js (React), Tailwind CSS
+-   **Backend**: Next.js API Routes (Serverless functions)
+-   **AI/ML**:
+    -   `@google/generative-ai` (Gemini) for text processing.
+    -   `@google-cloud/text-to-speech` for audio synthesis.
+-   **Data**: Local JSON storage (simple MVP).
+-   **Audio Processing**: `fluent-ffmpeg` for stitching audio files.
 
----
+## Prerequisites
 
-## Step 1: The Architect Phase (/techspec)
+1.  **Node.js** (v18+) and **npm**.
+2.  **Google Cloud Project** with:
+    -   Generative AI API enabled (Gemini).
+    -   Text-to-Speech API enabled.
+3.  **FFmpeg** installed on your system.
+    -   macOS: `brew install ffmpeg`
+    -   Linux: `sudo apt install ffmpeg`
+    -   Windows: Download and add to PATH.
 
-**Goal:** Transform a Functional Spec (Google Doc) into a Technical Spec (Google Doc).
+## Setup & Running Locally
 
-1. **Command:**
-   ```
-   /techspec "Name of your functional specs doc" "Your desired technology stack and requirements"
-   ```
+1.  **Clone the repository**:
+    ```bash
+    git clone <repository-url>
+    cd podcast-generator
+    ```
 
-2. **What Happens:**
-    * The agent searches your Drive for the doc.
-    * It reads the requirements.
-    * It generates a **Technical Specification** including Data Models, API Routes, and Architecture based on your inputs.
-    * **Output:** It creates a *new* Google Doc titled "Technical Specification - Application name" and gives you the link.
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
 
----
+3.  **Environment Configuration**:
+    Create a `.env.local` file in the root directory:
+    ```env
+    GOOGLE_API_KEY=your_gemini_api_key
+    # If using a Service Account for Google Cloud TTS (Recommended)
+    GOOGLE_APPLICATION_CREDENTIALS="path/to/your/service-account-key.json"
+    ```
 
-## Step 2: The Planning Phase (/plan)
+4.  **Run the development server**:
+    ```bash
+    npm run dev
+    ```
 
-**Goal:** Break the Technical Spec down into an atomic Implementation Plan.
+5.  **Open the app**:
+    Visit [http://localhost:3000](http://localhost:3000).
 
-1. **Command:**
-   ```
-   /plan "Name of your Tech spec doc"
-   ```
-   *(Use the exact name of the doc generated in Step 1)*
+## Usage
 
-2. **What Happens:**
-    * The agent reads the Tech Spec.
-    * It creates a local file `IMPLEMENTATION_PLAN.md`.
-    * It breaks the project into phases (e.g., Setup, Backend, Frontend, Polish).
-    * It defines the Git strategy.
+1.  **Add Feeds**: Paste an RSS URL (e.g., `http://feeds.bbci.co.uk/news/rss.xml`) into the "Add Feed" input.
+2.  **Generate**: Click "Generate New Episode". The AI will fetch the latest articles, summarize them, and create an MP3. *Note: This process may take 1-2 minutes.*
+3.  **Listen**: The new episode will appear in the player on the right. Click play or download.
 
----
+## License
 
-## Step 3: The Build Phase (/build)
-
-**Goal:** Execute the plan and write the code.
-
-1. **Command:**
-   ```
-   /build IMPLEMENTATION_PLAN.md "Name of your Tech spec doc"
-   ```
-
-2. **What Happens (Iterative):**
-    * **Execution:** The agent iterates through the plan, initializing the project structure and writing the application code.
-    * **Visuals:** It generates necessary visual assets (images, icons) as defined in the spec.
-    * **Progress:** It updates `IMPLEMENTATION_PLAN.md` as tasks are completed.
-
----
-
-## Step 4: Final Delivery
-
-**Goal:** Push the code and open a Pull Request.
-
-1. **Action:**
-   The `/build` command's final phase usually covers this, or you can manually instruct the agent to finalize the project.
-
-2. **What Happens:**
-    * The agent runs final checks (linting/formatting).
-    * It creates a `README.md` for the new application.
-    * It commits all changes.
-    * It pushes the feature branch to GitHub.
-    * It uses the GitHub extension to **Open a Pull Request**.
-
----
-
-## Summary of Commands
-
-| Step | Command | Input | Output |
-| :--- | :--- | :--- | :--- |
-| **1. Spec** | `/techspec` | Functional Doc (Drive) | Tech Spec (Drive) |
-| **2. Plan** | `/plan` | Tech Spec (Drive) | `IMPLEMENTATION_PLAN.md` |
-| **3. Build** | `/build` | Plan + Tech Spec | Code, Assets, App |
+MIT

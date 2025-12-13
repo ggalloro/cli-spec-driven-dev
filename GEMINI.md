@@ -12,7 +12,10 @@ When executing an implementation plan, after a phase is completed, ask the user 
 
 ## Technical specifications, tools and architecture
 
-If asked to use icons or pictures in your app (for example hero images or background images) generate them with the Nano Banana extension 
+If asked to use icons or pictures in your app (for example hero images or background images) generate them with the Nano Banana extension
+
+For guide on interacting with Gemini API follow the instructions in:
+@gemini-styleguide.md
 
 ## SQLAlchemy Database interactions coding guidelines
 
