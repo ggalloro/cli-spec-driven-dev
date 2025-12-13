@@ -51,9 +51,9 @@
 - [x] Assemble the main page (`app/page.tsx`) with all components.
 
 ## Phase 5: Completion & Version Control
-- [ ] Verify application functionality (Add feed, Generate, Play).
-- [ ] Create a `README.md` file explaining the application functions, architecture, and how to run it.
-- [ ] Add all changes to the repository (`git add .`).
-- [ ] Commit the changes (`git commit -m "Complete implementation of Podcast Generator"`).
-- [ ] Push the feature branch to the remote repository.
-- [ ] Open a pull request for the feature branch.
+- [x] Verify application functionality (Add feed, Generate, Play).
+- [x] Create a `README.md` file explaining the application functions, architecture, and how to run it.
+- [x] Add all changes to the repository (`git add .`).
+- [x] Commit the changes (`git commit -m "Complete implementation of Podcast Generator"`).
+- [x] Push the feature branch to the remote repository.
+- [x] Open a pull request for the feature branch.

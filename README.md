@@ -15,7 +15,7 @@ An AI-powered application that turns your favorite RSS feeds into a personalized
 -   **Frontend**: Next.js (App Router), Tailwind CSS, Lucide Icons.
 -   **Backend**: Next.js API Routes.
 -   **Database**: SQLite with Prisma ORM.
--   **AI**: Google Gemini API (`gemini-1.5-flash`) for summarization.
+-   **AI**: Google Gemini API (`gemini-2.5-flash`) for summarization.
 -   **Audio**: `google-tts-api` (fallback) or configured TTS service, processed with `fluent-ffmpeg`.
 
 ## Prerequisites
