@@ -5,24 +5,22 @@ import crypto from 'crypto';
 
 export async function generateAudio(text: string): Promise<string> {
   try {
-    // Split text into chunks because TTS APIs usually have character limits
-    // google-tts-api limit is 200 chars, so we need to be careful.
-    // However, the getAudioBase64 supports splitting automatically for long text? 
-    // Actually, it's better to use `getAllAudioBase64` or handle it.
-    
-    // For simplicity in this prototype, we'll try to keep summaries short (< 200 chars) or just take the first part.
-    // But the summarization prompt asked for < 100 words, which can be > 200 chars.
-    
-    const url = googleTTS.getAudioUrl(text, {
+    // Use getAllAudioBase64 to automatically split long text (limit 200 chars)
+    // and get multiple audio segments.
+    const results = await googleTTS.getAllAudioBase64(text, {
       lang: 'en',
       slow: false,
       host: 'https://translate.google.com',
+      timeout: 10000,
+      splitPunct: ',.?!', // Split on punctuation
     });
 
-    // fetch the audio
-    const response = await fetch(url);
-    const buffer = await response.arrayBuffer();
-    
+    // Convert all base64 results to buffers
+    const buffers = results.map(result => Buffer.from(result.base64, 'base64'));
+
+    // Concatenate all buffers into one
+    const combinedBuffer = Buffer.concat(buffers);
+
     const fileName = `${crypto.randomUUID()}.mp3`;
     const tempDir = path.join(process.cwd(), 'tmp');
     if (!fs.existsSync(tempDir)) {
@@ -30,7 +28,7 @@ export async function generateAudio(text: string): Promise<string> {
     }
     
     const filePath = path.join(tempDir, fileName);
-    fs.writeFileSync(filePath, Buffer.from(buffer));
+    fs.writeFileSync(filePath, combinedBuffer);
     
     return filePath;
   } catch (error) {
