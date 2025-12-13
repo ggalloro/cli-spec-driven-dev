@@ -40,9 +40,9 @@
 - [x] Polish UI with Tailwind CSS (responsiveness, spacing, typography).
 
 ## Phase 6: Completion & Version Control
-- [ ] Verify application functionality.
-- [ ] Create a `README.md` file explaining the application functions, how to interact with them, the architecture, file breakdown and how to run and test it locally.
-- [ ] Add all changes to the repository (`git add .`).
-- [ ] Commit the changes (`git commit -m "Complete implementation of Podcast Generator"`).
-- [ ] Push the feature branch to the remote repository, creating a branch with the same name in the remote repository, using the Gemini CLI github MCP server.
-- [ ] Open a pull request for the feature branch using the Gemini CLI github MCP server, leave it open for review, don't merge it.
+- [x] Verify application functionality.
+- [x] Create a `README.md` file explaining the application functions, how to interact with them, the architecture, file breakdown and how to run and test it locally.
+- [x] Add all changes to the repository (`git add .`).
+- [x] Commit the changes (`git commit -m "Complete implementation of Podcast Generator"`).
+- [x] Push the feature branch to the remote repository, creating a branch with the same name in the remote repository, using the Gemini CLI github MCP server.
+- [x] Open a pull request for the feature branch using the Gemini CLI github MCP server, leave it open for review, don't merge it.

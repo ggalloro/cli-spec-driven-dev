@@ -13,7 +13,11 @@ export default function Home() {
   const handleGenerate = async () => {
     setIsGenerating(true);
     try {
-      const res = await fetch('/api/generate', { method: 'POST', body: JSON.stringify({}) });
+      const res = await fetch('/api/generate', { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}) 
+      });
       if (!res.ok) {
         const err = await res.json();
         alert(`Error: ${err.error}`);
