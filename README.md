@@ -1,94 +1,55 @@
-# Spec-Driven Development w Gemini CLI
+# Podcast Generator
 
-This repo has some basic assets to experiment **Spec-Driven Development** using the Gemini CLI. You will act as a developer going from a raw Functional Specification to a deployed Pull Request in a single session.
+A Next.js application that generates personalized audio news podcasts from RSS feeds using Google Gemini for summarization and Google Cloud Chirp for high-quality text-to-speech.
 
-## Assets
+## Features
 
-* `.gemini/commands/`: Contains configuration files for custom commands (`techspec`, `plan`, `build`).
-* `GEMINI.md`: Contains project rules and guidelines.
-* `.github/workflows`: Contains CI workflow.
-* **No application code**.
+- **RSS Feed Management**: Add and remove RSS feeds.
+- **AI Summarization**: Automatically fetches and summarizes the latest articles from your feeds using Gemini 1.5 Flash.
+- **Audio Generation**: Converts summaries into natural-sounding speech using Google's Chirp models.
+- **Podcast Player**: Listen to your generated daily briefings directly in the app.
+
+## Architecture
+
+- **Frontend**: Next.js (App Router), Tailwind CSS.
+- **Backend**: Next.js API Routes.
+- **Database**: SQLite (via Prisma & Better-SQLite3).
+- **AI Services**: Google Gemini API, Google Cloud Text-to-Speech.
+- **Audio Processing**: fluent-ffmpeg.
+
+## Setup
+
+1.  **Clone the repository**.
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+3.  **Environment Variables**:
+    Create a `.env.local` file with the following:
+    ```env
+    GOOGLE_AI_API_KEY=your_gemini_api_key
+    GOOGLE_APPLICATION_CREDENTIALS=path/to/your/google_cloud_credentials.json
+    DATABASE_URL="file:./dev.db"
+    ```
+4.  **Database Migration**:
+    ```bash
+    npx prisma migrate dev --name init
+    ```
+5.  **Run Development Server**:
+    ```bash
+    npm run dev
+    ```
 
 ## Requirements
 
-The `GEMINI.md` configuration and custom commands require the following extensions:
-* **Google Workspace**
-* **Nano Banana**
-* **GitHub**
+- Node.js 18+
+- ffmpeg installed on the system.
+- Google Cloud Project with Vertex AI / Gemini API and Text-to-Speech API enabled.
 
----
+## Usage
 
-## Step 1: The Architect Phase (/techspec)
-
-**Goal:** Transform a Functional Spec (Google Doc) into a Technical Spec (Google Doc).
-
-1. **Command:**
-   ```
-   /techspec "Name of your functional specs doc" "Your desired technology stack and requirements"
-   ```
-
-2. **What Happens:**
-    * The agent searches your Drive for the doc.
-    * It reads the requirements.
-    * It generates a **Technical Specification** including Data Models, API Routes, and Architecture based on your inputs.
-    * **Output:** It creates a *new* Google Doc titled "Technical Specification - Application name" and gives you the link.
-
----
-
-## Step 2: The Planning Phase (/plan)
-
-**Goal:** Break the Technical Spec down into an atomic Implementation Plan.
-
-1. **Command:**
-   ```
-   /plan "Name of your Tech spec doc"
-   ```
-   *(Use the exact name of the doc generated in Step 1)*
-
-2. **What Happens:**
-    * The agent reads the Tech Spec.
-    * It creates a local file `IMPLEMENTATION_PLAN.md`.
-    * It breaks the project into phases (e.g., Setup, Backend, Frontend, Polish).
-    * It defines the Git strategy.
-
----
-
-## Step 3: The Build Phase (/build)
-
-**Goal:** Execute the plan and write the code.
-
-1. **Command:**
-   ```
-   /build IMPLEMENTATION_PLAN.md "Name of your Tech spec doc"
-   ```
-
-2. **What Happens (Iterative):**
-    * **Execution:** The agent iterates through the plan, initializing the project structure and writing the application code.
-    * **Visuals:** It generates necessary visual assets (images, icons) as defined in the spec.
-    * **Progress:** It updates `IMPLEMENTATION_PLAN.md` as tasks are completed.
-
----
-
-## Step 4: Final Delivery
-
-**Goal:** Push the code and open a Pull Request.
-
-1. **Action:**
-   The `/build` command's final phase usually covers this, or you can manually instruct the agent to finalize the project.
-
-2. **What Happens:**
-    * The agent runs final checks (linting/formatting).
-    * It creates a `README.md` for the new application.
-    * It commits all changes.
-    * It pushes the feature branch to GitHub.
-    * It uses the GitHub extension to **Open a Pull Request**.
-
----
-
-## Summary of Commands
-
-| Step | Command | Input | Output |
-| :--- | :--- | :--- | :--- |
-| **1. Spec** | `/techspec` | Functional Doc (Drive) | Tech Spec (Drive) |
-| **2. Plan** | `/plan` | Tech Spec (Drive) | `IMPLEMENTATION_PLAN.md` |
-| **3. Build** | `/build` | Plan + Tech Spec | Code, Assets, App |
+1.  Open `http://localhost:3000`.
+2.  Add RSS feed URLs (e.g., `https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml`).
+3.  Click "Generate New Episode".
+4.  Wait for the process to complete (this can take a minute).
+5.  Play the generated episode from the list.

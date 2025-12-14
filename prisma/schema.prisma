@@ -1,0 +1,26 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Feed {
+  id        Int      @id @default(autoincrement())
+  url       String   @unique
+  title     String
+  createdAt DateTime @default(now())
+}
+
+model Podcast {
+  id        Int      @id @default(autoincrement())
+  title     String
+  filePath  String
+  duration  Int
+  createdAt DateTime @default(now())
+  summary   String?
+}
