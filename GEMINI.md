@@ -14,6 +14,13 @@ When executing an implementation plan, after a phase is completed, ask the user 
 
 If asked to use icons or pictures in your app (for example hero images or background images) generate them with the Nano Banana extension 
 
+## Gemini API Interaction Guidelines
+
+For a guide on interacting with the Google Gemini API, follow the instructions in:
+
+- **JavaScript, Node.js, Next.js**: `js_codegen_instructions.md`
+- **Python**: `py_codegen_instructions.md`
+
 ## SQLAlchemy Database interactions coding guidelines
 
 When using SQLAlchemy with Python and Flask, all database models and queries must adhere to the modern **SQLAlchemy 2.0** style. The legacy query API from `Flask-SQLAlchemy` (`Model.query`) is forbidden.
