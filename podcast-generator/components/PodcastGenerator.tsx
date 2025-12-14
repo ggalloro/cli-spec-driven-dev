@@ -12,7 +12,10 @@ export default function PodcastGenerator({ onGenerate }: { onGenerate: () => voi
     
     try {
       const res = await fetch('/api/podcasts/generate', { method: 'POST' });
-      if (!res.ok) throw new Error('Failed to start');
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.details || errData.error || 'Failed to start (Status: ' + res.status + ')');
+      }
       const { podcastId } = await res.json();
       
       setStatus('Fetching & Summarizing...');
@@ -43,10 +46,10 @@ export default function PodcastGenerator({ onGenerate }: { onGenerate: () => voi
         }
       }, 2000);
       
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
       setGenerating(false);
-      setStatus('Error starting');
+      setStatus(`Error: ${e.message}`);
     }
   };
 
