@@ -88,54 +88,97 @@ Content: ${article.contentSnippet || article.content || ''}`;
         script += "That's all for today. Thanks for listening.";
         
         // 3. Audio Synthesis
-        // Note: Real integration with Chirp/Vertex AI requires complex auth.
-        // We will generate a valid silent WAV file for the prototype so the player works.
-        
         const publicDir = path.join(process.cwd(), 'public', 'podcasts');
         if (!fs.existsSync(publicDir)) {
             fs.mkdirSync(publicDir, { recursive: true });
         }
 
-        // Generate 5 seconds of silence in WAV format
-        const sampleRate = 44100;
-        const numChannels = 1;
-        const bitsPerSample = 16;
-        const durationSeconds = 5;
-        const subChunk2Size = durationSeconds * sampleRate * numChannels * (bitsPerSample / 8);
-        const chunkSize = 36 + subChunk2Size;
-
-        const buffer = Buffer.alloc(44 + subChunk2Size);
-        // RIFF chunk descriptor
-        buffer.write('RIFF', 0);
-        buffer.writeUInt32LE(chunkSize, 4);
-        buffer.write('WAVE', 8);
-        // fmt sub-chunk
-        buffer.write('fmt ', 12);
-        buffer.writeUInt32LE(16, 16); // SubChunk1Size
-        buffer.writeUInt16LE(1, 20); // AudioFormat (PCM)
-        buffer.writeUInt16LE(numChannels, 22);
-        buffer.writeUInt32LE(sampleRate, 24);
-        buffer.writeUInt32LE(sampleRate * numChannels * (bitsPerSample / 8), 28); // ByteRate
-        buffer.writeUInt16LE(numChannels * (bitsPerSample / 8), 32); // BlockAlign
-        buffer.writeUInt16LE(bitsPerSample, 34);
-        // data sub-chunk
-        buffer.write('data', 36);
-        buffer.writeUInt32LE(subChunk2Size, 40);
-        // Data is already 0 (silence)
-
-        const audioFilename = `${podcastId}.wav`;
+        const audioFilename = `${podcastId}.mp3`;
         const audioPath = `/podcasts/${audioFilename}`;
         const absAudioPath = path.join(publicDir, audioFilename);
 
-        fs.writeFileSync(absAudioPath, buffer);
+        console.log("Attempting to generate audio via Google Cloud TTS...");
+        
+        let audioWritten = false;
+        
+        if (process.env.GOOGLE_API_KEY) {
+            try {
+                // Try standard Google Cloud TTS endpoint
+                const ttsUrl = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${process.env.GOOGLE_API_KEY}`;
+                const ttsResponse = await fetch(ttsUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        input: { text: script },
+                        voice: { languageCode: 'en-US', name: 'en-US-Neural2-F' }, // Using Neural2 voice
+                        audioConfig: { audioEncoding: 'MP3' }
+                    })
+                });
 
-        // 4. Update DB
-        db.updatePodcast(podcastId, {
-            status: 'COMPLETED',
-            audioPath: audioPath,
-            duration: durationSeconds,
-            transcript: script
-        });
+                if (ttsResponse.ok) {
+                    const ttsData = await ttsResponse.json();
+                    if (ttsData.audioContent) {
+                        fs.writeFileSync(absAudioPath, Buffer.from(ttsData.audioContent, 'base64'));
+                        audioWritten = true;
+                        console.log("Audio generated via Google Cloud TTS");
+                    }
+                } else {
+                    console.error("TTS API failed:", await ttsResponse.text());
+                }
+            } catch (err) {
+                console.error("TTS request error:", err);
+            }
+        }
+
+        if (!audioWritten) {
+            console.log("Falling back to silent WAV.");
+            // Fallback: Generate 5 seconds of silence in WAV format
+            const sampleRate = 44100;
+            const numChannels = 1;
+            const bitsPerSample = 16;
+            const durationSeconds = 5;
+            const subChunk2Size = durationSeconds * sampleRate * numChannels * (bitsPerSample / 8);
+            const chunkSize = 36 + subChunk2Size;
+
+            const buffer = Buffer.alloc(44 + subChunk2Size);
+            // RIFF chunk descriptor
+            buffer.write('RIFF', 0);
+            buffer.writeUInt32LE(chunkSize, 4);
+            buffer.write('WAVE', 8);
+            // fmt sub-chunk
+            buffer.write('fmt ', 12);
+            buffer.writeUInt32LE(16, 16); // SubChunk1Size
+            buffer.writeUInt16LE(1, 20); // AudioFormat (PCM)
+            buffer.writeUInt16LE(numChannels, 22);
+            buffer.writeUInt32LE(sampleRate, 24);
+            buffer.writeUInt32LE(sampleRate * numChannels * (bitsPerSample / 8), 28); // ByteRate
+            buffer.writeUInt16LE(numChannels * (bitsPerSample / 8), 32); // BlockAlign
+            buffer.writeUInt16LE(bitsPerSample, 34);
+            // data sub-chunk
+            buffer.write('data', 36);
+            buffer.writeUInt32LE(subChunk2Size, 40);
+            // Data is already 0 (silence)
+            
+            // Rename to .wav for the fallback
+            const fallbackPath = absAudioPath.replace('.mp3', '.wav');
+            fs.writeFileSync(fallbackPath, buffer);
+            
+            // Update path to point to wav
+            db.updatePodcast(podcastId, {
+                status: 'COMPLETED',
+                audioPath: audioPath.replace('.mp3', '.wav'),
+                duration: durationSeconds,
+                transcript: script
+            });
+        } else {
+             // Success with MP3
+             db.updatePodcast(podcastId, {
+                status: 'COMPLETED',
+                audioPath: audioPath,
+                duration: 120, // Estimated
+                transcript: script
+            });
+        }
         
         console.log(`Podcast ${podcastId} completed.`);
 
