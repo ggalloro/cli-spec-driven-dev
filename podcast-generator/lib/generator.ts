@@ -88,28 +88,52 @@ Content: ${article.contentSnippet || article.content || ''}`;
         script += "That's all for today. Thanks for listening.";
         
         // 3. Audio Synthesis
-        // Note: Real integration with Chirp/Vertex AI requires complex auth (ADC/Service Account).
-        // For this prototype with API Key, we will simulate the audio file creation.
-        // We will create a valid empty file or text-based file to demonstrate flow.
+        // Note: Real integration with Chirp/Vertex AI requires complex auth.
+        // We will generate a valid silent WAV file for the prototype so the player works.
         
         const publicDir = path.join(process.cwd(), 'public', 'podcasts');
         if (!fs.existsSync(publicDir)) {
             fs.mkdirSync(publicDir, { recursive: true });
         }
 
-        const audioFilename = `${podcastId}.mp3`;
+        // Generate 5 seconds of silence in WAV format
+        const sampleRate = 44100;
+        const numChannels = 1;
+        const bitsPerSample = 16;
+        const durationSeconds = 5;
+        const subChunk2Size = durationSeconds * sampleRate * numChannels * (bitsPerSample / 8);
+        const chunkSize = 36 + subChunk2Size;
+
+        const buffer = Buffer.alloc(44 + subChunk2Size);
+        // RIFF chunk descriptor
+        buffer.write('RIFF', 0);
+        buffer.writeUInt32LE(chunkSize, 4);
+        buffer.write('WAVE', 8);
+        // fmt sub-chunk
+        buffer.write('fmt ', 12);
+        buffer.writeUInt32LE(16, 16); // SubChunk1Size
+        buffer.writeUInt16LE(1, 20); // AudioFormat (PCM)
+        buffer.writeUInt16LE(numChannels, 22);
+        buffer.writeUInt32LE(sampleRate, 24);
+        buffer.writeUInt32LE(sampleRate * numChannels * (bitsPerSample / 8), 28); // ByteRate
+        buffer.writeUInt16LE(numChannels * (bitsPerSample / 8), 32); // BlockAlign
+        buffer.writeUInt16LE(bitsPerSample, 34);
+        // data sub-chunk
+        buffer.write('data', 36);
+        buffer.writeUInt32LE(subChunk2Size, 40);
+        // Data is already 0 (silence)
+
+        const audioFilename = `${podcastId}.wav`;
         const audioPath = `/podcasts/${audioFilename}`;
         const absAudioPath = path.join(publicDir, audioFilename);
 
-        // Writing the script to the file so we can inspect it, though it won't play as music.
-        // In a real app, this would be: await fs.promises.writeFile(absAudioPath, audioBuffer);
-        fs.writeFileSync(absAudioPath, `(Simulated Audio File)\n\nTRANSCRIPT:\n${script}`);
+        fs.writeFileSync(absAudioPath, buffer);
 
         // 4. Update DB
         db.updatePodcast(podcastId, {
             status: 'COMPLETED',
             audioPath: audioPath,
-            duration: 120, // Fake duration
+            duration: durationSeconds,
             transcript: script
         });
         

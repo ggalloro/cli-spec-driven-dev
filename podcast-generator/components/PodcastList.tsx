@@ -9,6 +9,7 @@ interface Podcast {
   duration: number;
   audioPath: string;
   status: 'PENDING' | 'COMPLETED' | 'FAILED';
+  transcript?: string;
 }
 
 export default function PodcastList({ refreshTrigger }: { refreshTrigger: number }) {
@@ -42,11 +43,22 @@ export default function PodcastList({ refreshTrigger }: { refreshTrigger: number
           {podcast.status === 'COMPLETED' && (
              <div className="mt-3">
                 <audio controls className="w-full h-8 mb-2">
-                    <source src={podcast.audioPath} type="audio/mpeg" />
+                    <source src={podcast.audioPath} type={podcast.audioPath.endsWith('.wav') ? "audio/wav" : "audio/mpeg"} />
                     Your browser does not support the audio element.
                 </audio>
-                <div className="flex justify-end">
-                     <a href={podcast.audioPath} download className="text-sm text-indigo-600 hover:text-indigo-800 hover:underline">Download MP3</a>
+                
+                {podcast.transcript && (
+                  <div className="mt-3 mb-2">
+                    <p className="text-xs font-semibold text-gray-500 mb-1">Transcript:</p>
+                    <div className="p-3 bg-gray-50 rounded text-sm text-gray-700 max-h-40 overflow-y-auto whitespace-pre-wrap border border-gray-100">
+                      {podcast.transcript}
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex justify-end items-center gap-3">
+                     <span className="text-xs text-gray-400 italic">Audio is simulated</span>
+                     <a href={podcast.audioPath} download className="text-sm text-indigo-600 hover:text-indigo-800 hover:underline">Download Audio</a>
                 </div>
              </div>
           )}
