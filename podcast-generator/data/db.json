@@ -1,1 +1,11 @@
-{"feeds": [], "podcasts": []}
+{
+  "feeds": [
+    {
+      "id": "c941bdd8-aecf-4b17-a910-60ae79cfe66c",
+      "url": "https://deepmind.google/blog/rss.xml",
+      "title": "Google DeepMind News",
+      "addedAt": "2025-12-14T12:25:21.569Z"
+    }
+  ],
+  "podcasts": []
+}

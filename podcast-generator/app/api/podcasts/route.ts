@@ -36,7 +36,8 @@ export async function POST() {
     generatePodcast(podcastId).catch(err => console.error("Generation failed in background:", err));
 
     return NextResponse.json({ podcastId, status: 'PENDING' }, { status: 202 });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to trigger generation' }, { status: 500 });
+  } catch (error: any) {
+    console.error("Trigger generation error:", error);
+    return NextResponse.json({ error: 'Failed to trigger generation', details: error.message }, { status: 500 });
   }
 }

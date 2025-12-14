@@ -4,15 +4,19 @@ import Parser from 'rss-parser';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { db } from './store';
 
-// Initialize Gemini
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || '');
-const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-
+// Initialize Gemini lazily
 const parser = new Parser();
 
 export async function generatePodcast(podcastId: string) {
     console.log(`Starting generation for ${podcastId}...`);
     try {
+        const apiKey = process.env.GOOGLE_API_KEY;
+        if (!apiKey) {
+            console.warn("GOOGLE_API_KEY is not set.");
+        }
+        const genAI = new GoogleGenerativeAI(apiKey || 'DUMMY_KEY');
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
         // 1. Fetch Feeds
         const feeds = db.getFeeds();
         let articles: any[] = [];
