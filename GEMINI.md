@@ -18,8 +18,8 @@ If asked to use icons or pictures in your app (for example hero images or backgr
 
 For a guide on interacting with the Google Gemini API, follow the instructions in:
 
-- **JavaScript, Node.js, Next.js**: `js_codegen_instructions.md`
-- **Python**: `py_codegen_instructions.md`
+@./js_codegen_instructions.md
+@./py_codegen_instructions.md
 
 ## SQLAlchemy Database interactions coding guidelines
 
