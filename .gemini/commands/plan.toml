@@ -53,8 +53,9 @@ The user has provided the Technical Specification Google Doc (URL or Name) in th
     ```
 
 4.  **Save Plan**:
-    *   Determine a suitable filename, e.g., `IMPLEMENTATION_PLAN.md`.
-    *   Write the generated Markdown content to this file using `write_file`.
+    *   **CRITICAL**: Do NOT use `docs.create` or create a Google Doc for the plan.
+    *   Save the plan **locally** as a Markdown file named `IMPLEMENTATION-PLAN.md`.
+    *   Use the `write_file` tool to save the generated content to this file in the current working directory.
 
 5.  **Finish**:
     *   Output the path to the created Implementation Plan file.
