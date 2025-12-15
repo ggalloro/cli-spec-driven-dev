@@ -6,7 +6,8 @@ This repo has some basic assets to experiment **Spec-Driven Development** using 
 
 * `.gemini/commands/`: Contains configuration files for custom commands (`techspec`, `plan`, `build`).
 * `GEMINI.md`: Contains project rules and guidelines.
-* `.github/workflows`: Contains CI workflow.
+* `js_codegen_instructions.md`: Contains Gemini API coding guidelines for JavaScript/TypeScript.
+* `py_codegen_instructions.md`: Contains Gemini API coding guidelines for Python.
 * **No application code**.
 
 ## Requirements
